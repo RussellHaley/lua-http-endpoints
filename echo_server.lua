@@ -7,19 +7,34 @@ local timeout = 2
 
 local function reply(resp)
 
-    local ws = websocket.new_from_stream(resp.headers, resp.stream)
-
-    print("got here twice")
-    assert(ws:accept())
-    assert(ws:send("Welcome To LuaSocketServer"))
-    local data = assert(ws:receive())
-    print(data)
-
     local req_body = assert(resp.stream:get_body_as_string(timeout))
     local req_body_type = resp.request_headers:get "content-type"
-    resp.headers:upsert(":status", "200")
-    resp.headers:append("content-type", req_body_type or "text/plain")
-    resp:set_body("I don't think so bub")
+
+
+    local ws = websocket.new_from_stream(resp.stream, resp.request_headers)
+    assert(ws:accept())
+    assert(ws:send("Welcome To LuaSocketServer"))
+
+    local data = "~quit"
+    while data ~= "QUIT" do
+        data = assert(ws:receive())
+        data = data:upper()
+        print(data)
+        if data == "ECHO" then
+            print "echo echo echoecho..."
+            ws:send("echo2")
+        elseif data == "TO BAD SAM" then
+            print "Nice knownin ya bud"
+        elseif data == "ECHO3" then
+            print "now this is just silly"
+        end
+
+    end
+    --This would be used in standard http web server
+
+--    resp.headers:upsert(":status", "200")
+--    resp.headers:append("content-type", req_body_type or "text/plain")
+--    resp:set_body("I don't think so bub")
 end
 
 assert(nice_server.new {
@@ -27,4 +42,3 @@ assert(nice_server.new {
     port = port;
     reply = reply;
 }:loop())
-

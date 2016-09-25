@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../LuaWebsocketTest/lua-http-testing.iml" filepath="$PROJECT_DIR$/../LuaWebsocketTest/lua-http-testing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lua-http-testing.iml" filepath="$PROJECT_DIR$/lua-http-testing.iml" />
     </modules>
   </component>
 </project>
