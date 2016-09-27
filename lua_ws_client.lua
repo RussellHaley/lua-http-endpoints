@@ -13,42 +13,72 @@
 --end
 --print(body)
 
-local websocket = require "http.websocket"
-local message1 = require "message1"
+local somevar = false
 local cqueues = require "cqueues"
+local websocket = require "http.websocket"
+local serpent = require "serpent"
+
+local message1 = require "message1"
+local instrumentation = require "instrumentation"
+
+local cq = cqueues.new()
+
+local i = instrumentation.new("lua_ws_client")
+
+i.Newvalue = 100
+i.new_value_2 = 999
+
+
+
 local ws = websocket.new_from_uri("ws://localhost:8000")
-
 assert(ws:connect())
-assert(ws:send([[authCommand {"Username":"Russell", "Password":"testing"}]]))
 
-local data
-local response
+cq:wrap(function()
+    repeat
+        local response = ws:receive()
+        print(response)
+    until not response or response:upper() == "QUIT"
+end)
 
-local msg = message1.new()
 
-local stop = false
-recieve_q = cqueues.new()
-recieve_q:wrap(
-    function()
-        while 1 do
-            print("got here")
-            local response = ws:recieve()
-            print(response)
+local shutdown = false
+cq:wrap(function()
+    repeat
+        io.stdout:write("Input> ")
+        cqueues.poll({pollfd=0; events="r"}) -- wait until data ready to read on stdin
+        local data = io.stdin:read"*l" -- blockingly read a line. shouldn't block if tty is in line buffered mode.
+        if data == nil or data:upper() == "QUIT" then
+            shutdown = true
+            ws:close()
+            break
         end
-    end)
+        assert(ws:send(data)) -- echo it back?
+    until shutdown ~= false
+    --cleanup here
+end)
 
-recieve_q:loop()
+cq:wrap(function()
+    repeat
 
---asset(ws:send("hello from mars"))
-while stop ~= true do
-    io.write("input> ")
-    data = io.read("*line")
-    print(data)
-    if data:upper() == "STOP" then
-        stop = true
-    end
-    ws:send(data)
+        local msg = message1.new()
+        msg.uuid = getUUID()
+        str = serpent.dump(msg)
+        assert(ws:send(str))
+        print(str)
+        cqueues.sleep(3)
+    until shutdown ~= false
+end)
 
+local function getUUID()
+    local handle = io.popen("uuidgen")
+    local val, lines = handle:read("*a")
+    val = val:gsub("^%s*(.-)%s*$", "%1")
+    return val
 end
 
-assert(ws:close())
+repeat assert(cq:step())
+
+until somevar or cq:empty()
+
+
+
