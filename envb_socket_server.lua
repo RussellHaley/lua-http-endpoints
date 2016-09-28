@@ -5,6 +5,10 @@ local websocket = require "http.websocket"
 local dkjson = require "dkjson"
 local serpent = require "serpent"
 
+local configuration = require "configuration"
+
+local conf = configuration.new([[socketserver.conf]])
+
 function PrintTable(t)
     for k, v in pairs(t) do
         print(k, v)
@@ -20,7 +24,10 @@ local function reply(resp)
 
     --1) check the request type. If it's a ws connection, then upgrade it?
 
-
+    for k, v in pairs(resp.request_headers) do
+        print(k, v)
+    end
+    print(resp.request_headers:get ":uri")
     local ws = websocket.new_from_stream(resp.stream, resp.request_headers)
     assert(ws:accept())
     assert(ws:send("Welcome To LuaSocketServer"))
@@ -48,6 +55,7 @@ local function reply(resp)
                 end
             else
                 print(data)
+                print(err)
                 ws:send(data)
             end
         else
@@ -63,7 +71,7 @@ local function reply(resp)
 end
 
 assert(nice_server.new {
-    host = "localhost";
-    port = port;
+    host = conf.host;
+    port = conf.port;
     reply = reply;
 }:loop())

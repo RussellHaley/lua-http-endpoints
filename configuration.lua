@@ -6,37 +6,43 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local function ReadConf(filePath)
---    print("Opening file " .. filePath)
-    local conf
+local function ReadConf(filePath, debug)
+    local conf = {}
     local fp = io.open(filePath, "r")
-
     if fp then
-        conf.conf_file_path = filePath
-    for line in fp:lines() do
-        line = line:match("%s*(.+)")
-        if line and line:sub(1, 1) ~= "#" and line:sub(1, 1) ~= ";" then
-            local option = line:match("%S+"):lower()
-            local value = line:match("%S*%s*(.*)")
+        conf["conf_file_path"] = filePath
+        for line in fp:lines() do
+            line = line:match("%s*(.+)")
+            if line and line:sub(1, 1) ~= "#" and line:sub(1, 1) ~= ";" then
+                local option = line:match("%S+"):lower()
+                local value = line:match("%S*%s*(.*)")
 
-            if not value then
-                conf[option] = true
-            else
-                if not value:find(",") then
-                    conf[option] = value
+                if not value then
+                    conf[option] = false
                 else
-                    value = value .. ","
-                    conf[option] = {}
-                    for entry in value:gmatch("%s*(.-),") do
-                        conf[option][#conf[option] + 1] = entry
+                    if not value:find(",") then
+                        conf[option] = value
+                    else
+                        value = value .. ","
+                        conf[option] = {}
+                        for entry in value:gmatch("%s*(.-),") do
+                            conf[option][#conf[option] + 1] = entry
+                        end
                     end
                 end
             end
         end
+        fp:close()
+    else
+        --Should do something if the file doesn't exist
     end
-    fp:close()
-    conf.SetItem = SetItem
+
+    if debug == true then
+        for i, v in pairs(conf) do
+            print(i, v)
+        end
     end
+
     return conf
 end
 
@@ -63,3 +69,9 @@ SetConfItem = function(item, enabled)
     --print(item,enabled)
     SetConf(item, enabled)
 end
+
+local function new(filePath)
+    return ReadConf(filePath, false)
+end
+
+return { new = new; }

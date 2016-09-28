@@ -16,7 +16,7 @@ local Instr = {}
 
 local lightningmdb_lib = require("lightningmdb")
 local lfs = require("lfs")
-local lua_t = require("t")
+local configuration = require("configuration")
 
 --penlight
 
@@ -84,37 +84,6 @@ Instr.SetConfItem = function(item, enabled)
     SetConf(item, enabled)
 end
 ]]
-
-local function ReadConf(filePath)
-
-    print("Opening file " .. filePath)
-    local Conf
-    local fp = io.open(filePath, "r")
-
-    for line in fp:lines() do
-        line = line:match("%s*(.+)")
-        if line and line:sub(1, 1) ~= "#" and line:sub(1, 1) ~= ";" then
-            local option = line:match("%S+"):lower()
-            local value = line:match("%S*%s*(.*)")
-
-            if not value then
-                Conf[option] = true
-            else
-                if not value:find(",") then
-                    Conf[option] = value
-                else
-                    value = value .. ","
-                    Conf[option] = {}
-                    for entry in value:gmatch("%s*(.-),") do
-                        Conf[option][#Conf[option] + 1] = entry
-                    end
-                end
-            end
-        end
-    end
-    fp:close()
-    return Conf
-end
 
 local function DirectoryExists(name)
     if type(name) ~= "string" then return false end
@@ -235,14 +204,14 @@ Instr.Close = function()
 end
 
 
-local function new(confName)
+local function new(confFilePath)
 
-    local confFilePath = RemoveFileExtention(confName) .. ".conf"
-    local Conf = ReadConf(confFilePath)
+
+    local conf = configuration.new(confFilePath)
     --Build path some/path/to/data/2016-12-30_245959
-    print(Conf["base_path"])
-    Instr["data_directory"] = Conf["base_path"] .. "/" .. Conf["data_dir_name"] .. "/" .. os.date("%Y-%m-%d_%H%M%S")
-    Instr.rm_data_dir = Conf.rm_data_dir
+    print(conf["base_path"])
+    Instr["data_directory"] = conf["base_path"] .. "/" .. conf["data_dir_name"] .. "/" .. os.date("%Y-%m-%d_%H%M%S")
+    Instr.rm_data_dir = conf.rm_data_dir
     if DirectoryExists(Instr.data_directory) then
         print("Found data directory. Using existing database.")
     else
@@ -258,40 +227,3 @@ return {new = new;}
   assert(Evq:add_dirwatch(uri, OnFilesystemChanged, 10000000, false, true))
 end]]
 
---[[
-function OnFilesystemChanged()
-  print("GOt a hit")
-  --CheckContinue()
-  
-end
-
-function StopWatchDir(uri)
-  
-end
-]]
-
-
---[[*****************************************************************
-Name: Applicaiton-Base-1
-Description: Sputtering start of the main application. Will attempt
-to build a frameworl out of this now.
-*****************************************************************--]]
---[[
-
-Begin()
-
-
-
-Instr["system_stat_boardtemp"] = "100c"
-Instr["system_startup_guid"] = GetUuid()
-
---PrintTable(Instr)
-
-
-UpdateInstrumentation()
-
-ReadInstrumentation()
-
-StopWatchDir()
-
-End()]]

@@ -16,14 +16,14 @@
 local somevar = false
 local cqueues = require "cqueues"
 local websocket = require "http.websocket"
-local serpent = require "serpent"
+local json = require "dkjson"
 
 local message1 = require "message1"
 local instrumentation = require "instrumentation"
 
 local cq = cqueues.new()
 
-local i = instrumentation.new("lua_ws_client")
+local i = instrumentation.new("client.conf")
 
 i.Newvalue = 100
 i.new_value_2 = 999
@@ -62,14 +62,14 @@ cq:wrap(function()
 
         local msg = message1.new()
         msg.uuid = getUUID()
-        str = serpent.dump(msg)
+        str = json.encode(msg)
         assert(ws:send(str))
-        print(str)
+        --        print(str)
         cqueues.sleep(3)
     until shutdown ~= false
 end)
 
-local function getUUID()
+function getUUID()
     local handle = io.popen("uuidgen")
     local val, lines = handle:read("*a")
     val = val:gsub("^%s*(.-)%s*$", "%1")
