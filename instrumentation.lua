@@ -18,9 +18,6 @@ local lightningmdb_lib = require("lightningmdb")
 local lfs = require("lfs")
 local configuration = require("configuration")
 
---penlight
-
-
 local lightningmdb = _VERSION >= "Lua 5.2" and lightningmdb_lib or lightningmdb
 
 local MDB = setmetatable({}, {
@@ -50,47 +47,10 @@ Instr.Stat = function()
 
 end
 
-
-
---[[
-Writes values to the applications internal conf file. 
-RH - This has a bug. If there is no final \\n then the 
-Parsing doesn't always work. Need to improve the matching.
-RH-2016-09-26 This is all wrong. If we have a conf table, then we should
-put values in the tables and save that, not write directly to the file, because then we need to reload the whole thing.
---]]
---[[
-function SetConf(item, value)
-    --Read in the file and look for the "Item value
-    conf = file.read(ConfFileName)
-    i, j = conf:find(item)
-    if i then --if item is found
-    --replace item=<anything> with item=value
-    -- THIS SUBSTITUTION DOESN"T WORK PROPERLY IT ONLY FINDS LINEFEED not the end of string
-    conf = conf:gsub(item .. "=.-[%\n|$]", item .. "=" .. value .. "\n")
-    else --item wasn't found
-    if conf:sub(#conf, 1) == "\n" then
-        conf = conf .. item .. "=" .. value
-    else
-        conf = conf .. "\n" .. item .. "=" .. value
-    end
-    end
-    print(conf)
-    file.write(ConfFileName, conf)
-end
-
-Instr.SetConfItem = function(item, enabled)
-    --print(item,enabled)
-    SetConf(item, enabled)
-end
-]]
-
 local function DirectoryExists(name)
     if type(name) ~= "string" then return false end
     local cd = lfs.currentdir()
     local is = lfs.chdir(name) and true or false
-    print(is)
-    print(name)
     lfs.chdir(cd)
     return is
 end
@@ -113,10 +73,7 @@ Instr.WriteInstrumentation = function ()
         local rc = t:put(d, key, value, MDB.NOOVERWRITE)
 --        count = count + 1
     end
-
---    print("Total Items Added", count)
     t:commit()
-
     PrintStat(e)
     e:close()
 end
@@ -174,7 +131,6 @@ Instr.ReadInstrumentation = function ()
     local k
     for k, v in cursor_pairs(cursor) do
         data:insert(k,v)
-        print(k, v)
     end
 
     cursor:close()
@@ -208,8 +164,7 @@ local function new(confFilePath)
 
 
     local conf = configuration.new(confFilePath)
-    --Build path some/path/to/data/2016-12-30_245959
-    print(conf["base_path"])
+
     Instr["data_directory"] = conf["base_path"] .. "/" .. conf["data_dir_name"] .. "/" .. os.date("%Y-%m-%d_%H%M%S")
     Instr.rm_data_dir = conf.rm_data_dir
     if DirectoryExists(Instr.data_directory) then

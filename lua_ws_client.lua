@@ -21,6 +21,8 @@ local json = require "dkjson"
 local message1 = require "message1"
 local instrumentation = require "instrumentation"
 
+local configuration = require "configuration"
+
 local cq = cqueues.new()
 
 local i = instrumentation.new("client.conf")
@@ -28,9 +30,11 @@ local i = instrumentation.new("client.conf")
 i.Newvalue = 100
 i.new_value_2 = 999
 
+--local conf = configuration.new("/etc/rc.conf",true)
+local conf = configuration.new("client.conf", true)
 
+local ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
 
-local ws = websocket.new_from_uri("ws://localhost:8000")
 assert(ws:connect())
 
 cq:wrap(function()
