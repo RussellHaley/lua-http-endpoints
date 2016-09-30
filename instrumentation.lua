@@ -166,11 +166,22 @@ local function new(confFilePath)
     if DirectoryExists(Instr.data_directory) then
         print("Found data directory. Using existing database.")
     else
-        os.execute("mkdir -p " .. Instr.data_directory)
+        local count = 0
+        for slash in Instr.data_directory:gmatch("/") do
+            count = count + 1
+        end
+
+        --local first_slash = Instr.data_directory:gmatch("/")
+        if count <= 1 then
+            error("The filename is invalid. Check the base_path and data_dir values in the config file. Attempted data dir: " .. Instr.data_directory)
+        else
+            os.execute("mkdir -p " .. Instr.data_directory)
+        end
     end
 
     return Instr;
 end
+
 return {new = new;}
 
 --[[function StartWatchDir(uri)

@@ -15,6 +15,7 @@ function PrintTable(t)
     end
 end
 
+
 local timeout = 2
 
 local function reply(resp)
@@ -31,6 +32,8 @@ local function reply(resp)
     local ws = websocket.new_from_stream(resp.stream, resp.request_headers)
     assert(ws:accept())
     assert(ws:send("Welcome To LuaSocketServer"))
+
+    --    local cq = cqueues
 
     --[[
     --Check if the input can be parsed.

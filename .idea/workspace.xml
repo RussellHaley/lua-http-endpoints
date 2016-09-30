@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c55ee8f5-e014-41ae-bb1d-1237ee600eaf" name="Default" comment="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='&#10;socketserver.conf - convert to use '='">
+    <list default="true" id="c55ee8f5-e014-41ae-bb1d-1237ee600eaf" name="Default" comment="Minor update to message. Got an error in client after an hour of running.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/file.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client.conf" afterPath="$PROJECT_DIR$/client.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/configuration.lua" afterPath="$PROJECT_DIR$/configuration.lua" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/envb_socket_server.lua" afterPath="$PROJECT_DIR$/envb_socket_server.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/instrumentation.lua" afterPath="$PROJECT_DIR$/instrumentation.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lua_ws_client.lua" afterPath="$PROJECT_DIR$/lua_ws_client.lua" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/message1.lua" afterPath="$PROJECT_DIR$/message1.lua" />
     </list>
     <ignored path="LuaClient1.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,11 +32,61 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="lua_ws_client.lua" pinned="false" current-in-tab="true">
+      <file leaf-file-name="envb_socket_server.lua" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="522">
+              <caret line="35" column="2" selection-start-line="35" selection-start-column="2" selection-end-line="35" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="lua_ws_client.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lua_ws_client.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-198">
-              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+            <state relative-caret-position="306">
+              <caret line="137" column="24" selection-start-line="137" selection-start-column="24" selection-end-line="137" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="file.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/file.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="469">
+              <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="instrumentation.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/instrumentation.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="163" column="116" selection-start-line="163" selection-start-column="90" selection-end-line="163" selection-end-column="116" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="configuration.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/configuration.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="540">
+              <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="message1.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/message1.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -69,67 +122,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="180">
-                <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-          <provider editor-type-id="MarkdownFxPreviewEditor">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="envb_socket_server.lua" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" column="41" selection-start-line="2" selection-start-column="41" selection-end-line="32" selection-end-column="49" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="application-base-1.lua" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/Git/dwe/application-base-1.lua">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4788">
               <caret line="266" column="0" selection-start-line="266" selection-start-column="0" selection-end-line="266" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="instrumentation.lua" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/instrumentation.lua">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="125" column="50" selection-start-line="125" selection-start-column="50" selection-end-line="125" selection-end-column="50" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="configuration.lua" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/configuration.lua">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="486">
-              <caret line="120" column="0" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="message1.lua" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/message1.lua">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="18" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -165,16 +162,17 @@
       <list>
         <option value="$PROJECT_DIR$/WSServer.lua" />
         <option value="$PROJECT_DIR$/ClientService.lua" />
-        <option value="$PROJECT_DIR$/message1.lua" />
         <option value="$PROJECT_DIR$/echo_server.lua" />
         <option value="$PROJECT_DIR$/echo_server.lua" />
         <option value="$PROJECT_DIR$/nice_server.lua" />
         <option value="$PROJECT_DIR$/duarn1.lua" />
         <option value="$PROJECT_DIR$/notes.txt" />
-        <option value="$PROJECT_DIR$/envb_socket_server.lua" />
-        <option value="$PROJECT_DIR$/configuration.lua" />
         <option value="$PROJECT_DIR$/Debugtesting.lua" />
+        <option value="$PROJECT_DIR$/message1.lua" />
+        <option value="$PROJECT_DIR$/configuration.lua" />
         <option value="$PROJECT_DIR$/instrumentation.lua" />
+        <option value="$PROJECT_DIR$/envb_socket_server.lua" />
+        <option value="$PROJECT_DIR$/file.lua" />
         <option value="$PROJECT_DIR$/lua_ws_client.lua" />
       </list>
     </option>
@@ -268,7 +266,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="SearchEverywhereHistoryKey" value="import file&#9;null&#9;null&#10;rename&#9;ACTION&#9;RenameElement&#10;login manager&#9;null&#9;null&#10;line num&#9;null&#9;null" />
-    <property name="settings.editor.selected.configurable" value="fileTemplates" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
@@ -775,9 +773,9 @@
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua (1)" />
-        <item index="1" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua" />
-        <item index="3" class="java.lang.String" itemvalue="Lua Script.envb_socket_server.lua" />
+        <item index="1" class="java.lang.String" itemvalue="Lua Script.envb_socket_server.lua" />
+        <item index="2" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua (1)" />
+        <item index="3" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua" />
         <item index="4" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua" />
       </list>
     </recent_temporary>
@@ -809,7 +807,7 @@
       <workItem from="1475033851609" duration="7079000" />
       <workItem from="1475123464157" duration="12519000" />
       <workItem from="1475167917596" duration="3206000" />
-      <workItem from="1475172173218" duration="5219000" />
+      <workItem from="1475172173218" duration="13318000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Initial Commit&quot;">
       <created>1474703826348</created>
@@ -846,11 +844,18 @@
       <option name="project" value="LOCAL" />
       <updated>1475134836216</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Minor update to message. Got an error in client after an hour of running.">
+      <created>1475207925428</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1475207925428</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73764000" />
+    <option name="totallyTimeSpent" value="81863000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="0" width="1894" height="1045" extended-state="4" />
@@ -901,7 +906,8 @@
     <MESSAGE value="Added new instrumentation.lua&#10;Added configuration.lua&#10;started using message1 as message base&#10;" />
     <MESSAGE value="Fixed errors in configuration.lua&#10;Moved instrumentation.lua to use configuration.lua&#10;cleaned up processing and added conf files for server and client configuration.&#10;" />
     <MESSAGE value="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='&#10;socketserver.conf - convert to use '='" />
-    <option name="LAST_COMMIT_MESSAGE" value="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='&#10;socketserver.conf - convert to use '='" />
+    <MESSAGE value="Minor update to message. Got an error in client after an hour of running." />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor update to message. Got an error in client after an hour of running." />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -909,27 +915,27 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/envb_socket_server.lua</url>
-          <line>56</line>
+          <line>59</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/envb_socket_server.lua</url>
-          <line>39</line>
+          <line>42</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/envb_socket_server.lua</url>
-          <line>43</line>
+          <line>46</line>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/envb_socket_server.lua</url>
-          <line>26</line>
+          <line>27</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/lua_ws_client.lua</url>
-          <line>66</line>
+          <line>68</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
@@ -945,14 +951,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="29" column="35" selection-start-line="29" selection-start-column="35" selection-end-line="29" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/message1.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -1182,8 +1180,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="180">
-            <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <first_editor relative-caret-position="144">
+            <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
             <folding />
           </first_editor>
           <second_editor />
@@ -1215,14 +1213,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/duarn1.lua" />
-    <entry file="file://$PROJECT_DIR$/message1.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="18" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/notes.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="324">
@@ -1239,14 +1229,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="41" selection-start-line="2" selection-start-column="41" selection-end-line="32" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Debugtesting.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
@@ -1255,10 +1237,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/message1.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/configuration.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="120" column="0" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
+        <state relative-caret-position="540">
+          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/file.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="469">
+          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1266,15 +1264,23 @@
     <entry file="file://$PROJECT_DIR$/instrumentation.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
-          <caret line="125" column="50" selection-start-line="125" selection-start-column="50" selection-end-line="125" selection-end-column="50" />
+          <caret line="163" column="116" selection-start-line="163" selection-start-column="90" selection-end-line="163" selection-end-column="116" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lua_ws_client.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-198">
-          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+        <state relative-caret-position="306">
+          <caret line="137" column="24" selection-start-line="137" selection-start-column="24" selection-end-line="137" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="35" column="2" selection-start-line="35" selection-start-column="2" selection-end-line="35" selection-end-column="2" />
           <folding />
         </state>
       </provider>

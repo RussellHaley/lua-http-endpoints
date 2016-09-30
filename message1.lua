@@ -11,9 +11,9 @@ message.sequence = 0
 message.uuid = "0-0-0-0"
 message.destination = ""
 message.type = "status"
-message.body = {temp=45,imagecount=100,state="nominal" }
+message.body = {}
 
-function new()
+local function new()
    return message;
 end
 return {new = new;}

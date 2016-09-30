@@ -37,6 +37,10 @@ local function loadConfFile(fn)
 end
 
 
+local function trim(s)
+    return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
 --- Read a conf file into a table.
 -- Reads a configuration file in key=value notation.
 -- Can include a couple of transforms but it really needs to
@@ -66,9 +70,9 @@ local function ReadConf(filePath, removequotes, debug)
                     if not value:find(",") then
                         if removequotes == true then
                             table.insert(conf, option)
-                            conf[option] = value:gsub("\"", "")
+                            conf[option] = trim(value:gsub("\"", ""))
                         else
-                            conf[option] = value
+                            conf[option] = trim(value)
                         end
                     else
                         --This line has a comma in it. There is more than
@@ -135,5 +139,9 @@ end
 local function new(file, removequotes, debug)
     return ReadConf(file, removequotes, debug)
 end
+
+
+
+
 
 return { new = new; }
