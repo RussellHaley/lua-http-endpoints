@@ -1,10 +1,10 @@
---
--- Created by IntelliJ IDEA.
--- User: russellh
+--- Configuration Reader and Writer.
+-- @module Configuration
+-- @author russellh
+-- @Date 2016-09-29
+-- Created by IntelliJ IDEA
 -- Date: 9/26/16
 -- Time: 11:37 PM
--- To change this template use File | Settings | File Templates.
---
 
 --[[
 -- Load a conf file using loadstring
@@ -36,11 +36,12 @@ local function loadConfFile(fn)
     return t -- { server_port = '8000', server_url = 'localhost', base_path = 'confFilePath', data_dir_name = 'data' }
 end
 
---[[
--- Descrption: Reads a configuration file in key=value notation.
---Can include a couple of transforms but it really needs to
---use lpeg to do the transformations.
--- ]]
+
+--- Read a conf file into a table.
+-- Reads a configuration file in key=value notation.
+-- Can include a couple of transforms but it really needs to
+-- use lpeg to do the transformations.
+-- @function ReadConf
 local function ReadConf(filePath, removequotes, debug)
     local fp = io.open(filePath, "r")
     if fp then
@@ -64,6 +65,7 @@ local function ReadConf(filePath, removequotes, debug)
                     --Check for comma, If no comma, single value
                     if not value:find(",") then
                         if removequotes == true then
+                            table.insert(conf, option)
                             conf[option] = value:gsub("\"", "")
                         else
                             conf[option] = value
@@ -94,165 +96,44 @@ local function ReadConf(filePath, removequotes, debug)
     return conf
 end
 
-local function SetItem(table, item, value)
-    --Read in the file and look for the "Item value
-    local conf = file.read(table[":conf_file_path"])
-    local i, j = conf:find(item)
-    if i then --if item is found
-    --replace item=<anything> with item=value
-    -- THIS SUBSTITUTION DOESN"T WORK PROPERLY IT ONLY FINDS LINEFEED not the end of string
-    conf = conf:gsub(item .. "=.-[%\n|$]", item .. "=" .. value .. "\n")
-    else --item wasn't found
-    if conf:sub(#conf, 1) == "\n" then
-        conf = conf .. item .. "=" .. value
-    else
-        conf = conf .. "\n" .. item .. "=" .. value
+local function SetItem(key, value)
+    --(1) read all the lines into an array
+    local f, e = io.open(file)
+    -- check that e!
+    local lines = {}
+    for line in f:lines() do
+        table.insert(lines, line)
     end
+    f:close()
+
+    --(2) process only non-blank or lines not starting with #
+    local values = {}
+    local value_lines = {}
+    for i, line in ipairs(lines) do
+        if not (line:match '^%s*$' or line:match '^#') then
+            local var, val = line:match('^([^=]+)=(.+)')
+            values[var] = val
+            value_lines[var] = i
+        end
     end
-    print(conf)
-    file.write(ConfFileName, conf)
+
+    --The values table is what you need.  Updating a var is like so
+    lines[value_lines[var]] = var .. '=' .. new_value
+    --        and then write out
+    local f, e = io.open(file, 'w');
+    for i, line in ipairs(lines) do
+        f:write(line, '\n')
+    end
+    f:close()
 end
 
-ReadConf.SetConfItem = function(item, enabled)
-    --print(item,enabled)
-    SetConf(item, enabled)
+--ReadConf.SetConfItem = function(item, enabled)
+--    --print(item,enabled)
+--    SetConf(item, enabled)
+--end
+
+local function new(file, removequotes, debug)
+    return ReadConf(file, removequotes, debug)
 end
 
-
-
-return { new = ReadConf; }
-
---[[
---  Well, here's an LPeg solution.  I'll walk through it in the hopes you
-understand it.
-
--- ******************************************************
--- Loads the LPeg module.  Should be self explanitory.
--- ******************************************************
-
-local lpeg = require "lpeg"
-
--- *****************************************************
--- Cache some LPeg functions as locals.  This is primarily because I'm too
--- lazy to type 'lpeg.C' and 'lpeg.P' all over the place, leading to less
--- code clutter.  I'm only including the functions I'm using.
--- *****************************************************
-
-local Carg = lpeg.Carg -- returns argument to pattern:match() as capture
-local Cmt  = lpeg.Cmt  -- runs a function at match time over the captured data
-local Cs   = lpeg.Cs   -- returns a capture with substitued data
-local C    = lpeg.C    -- simple capture
-local S    = lpeg.S    -- define a set of characters to match
-local P    = lpeg.R    -- another way to define a set of characters to match using ranges
-local R    = lpeg.P    -- literal string match
-
--- ********************************************************
--- Some simple patterns.
--- SP will match spaces or tabs (as a set) zero or more times.
--- EQ is a literal '=' surrounded by optional whitespace.
--- LF is the end-of-line marker.  It will match an optional CR character
---    (used on Windows, not used at all on Linux or MacOSX) and a LF
---    character (used by all).
--- ********************************************************
-
-local SP   = S" \t"^0           -- optional white space
-local EQ   = SP * P"=" * SP     -- literal '='
-local LF   = P"\r"^-1 * P"\n"   -- end of line, OS neutral
-
--- *********************************************************
--- 'id' is a pattern to match a value name.  I'm being liberal in assuming
--- value names are made up of letters, digits, underscore and dashes.  Yes,
--- not only will this catch names like:
---
---      item
---      fred
---      a_name_for-something_
---
--- but also
---
---      3
---      23-skidoo
---
--- 'val' is defined as ASCII characters from space to ~ (the entire graphic
--- ASCII range) plus the tab character.
--- *********************************************************
-
-local id   = R("09","AZ","az","__","--")^1      -- name of var
-local val  = R("\t\t"," ~")^0                   -- rest of line
-
--- *********************************************************
--- Capture a name/value pair as two distinct values.
--- *********************************************************
-
-local pair = C(id) * EQ * C(val)
-
--- *********************************************************
--- The meat of the function.  When a pair is found, we also include the
--- first argument of the match function as a capture (basically, it contans
--- the name of the item and the new value---more on this below).  When the
--- match is found, immediately call the given function with our three
--- captures (the 'subject' and 'pos' argument are always passed---'subject'
--- being the entire string being matched, 'pos' just past the last character
--- matched).  We compre the id with the one we're looking for, and if it
--- matches, we return 'pos' (telling Cmt() that we succeeded) and a new
--- string containing 'item=newvalue'; otherwise, we didn't find what we were
--- looking for, and just return 'pos'.
---
--- We then check to make sure the line ends with a LF sequence.
--- *********************************************************
-
-local line = Cmt(pair * Carg(1),function(subject,pos,name,val,arg)
-  if name == arg.item then
-    return pos,string.format("%s=%s",name,arg.value)
-  else
-    return pos
-  end
-end) * LF
-
--- *********************************************************
--- The other half of the work.  we repeat looking for name/value pairs over
--- the entire input:
---
---      (line + P(1))^1
---
--- In case we don't match a name/value pair, we still match anything so we
--- don't error out.  This ensures we go over all input.
---
--- This loop is wrapped in the Cs() function, which causes some matches to
--- be substituted with a new value.  The function we passed to Cmt() returns
--- a new value when we find what we are looking for, otherwise it doesn't.
--- Any input not substituted will remain as-is.
--- *********************************************************
-
-local conf = Cs((line + P(1))^1)
-
--- *********************************************************
--- A simple function to scan the given data, changing item to have the new
--- value.  We call conf:match() with an additional table (retreived by the
--- Carg() function) with the name of the item and the new value.  We then
--- print the old data and the new data to show it changing.
--- *********************************************************
-
-local function SetItem(data,item,value)
-  local x = conf:match(data,1,{ item = item , value = value })
-  print(data)
-  print()
-  print(x)
-end
-
--- *********************************************************
--- Some sample data and a test run.
--- *********************************************************
-
-local contents = [[
-one = two
-three=four
-; comment---this should come out okay
-This_is_a_header=some values go here
-item = old_value
-other_header_name=this that the other
-_test=foobar
-]]
-
---SetItem(contents,'item','new value')
--- ]]
+return { new = new; }

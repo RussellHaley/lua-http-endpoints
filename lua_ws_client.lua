@@ -27,11 +27,11 @@ local cq = cqueues.new()
 
 local i = instrumentation.new("client.conf")
 
-i.Newvalue = 100
-i.new_value_2 = 999
+local upd = i.UpdateInstrumentation
+
 
 --local conf = configuration.new("/etc/rc.conf",true)
-local conf = configuration.new("client.conf", true)
+local conf = configuration.new("client.conf", false, false)
 
 local ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
 
@@ -63,13 +63,44 @@ end)
 
 cq:wrap(function()
     repeat
-
+        print("ping")
         local msg = message1.new()
         msg.uuid = getUUID()
+        local items = i.ReadInstrumentation()
+        for k, v in pairs(items) do
+
+            msg[k] = v
+        end
+
         str = json.encode(msg)
         assert(ws:send(str))
         --        print(str)
         cqueues.sleep(3)
+    until shutdown ~= false
+end)
+
+cq:wrap(function()
+    repeat
+        local bt = "board_temperature"
+        local nv = "new_value_2"
+
+        if i[bt] ~= nil then
+            upd(bt, i[bt] + 152)
+        else
+            upd(bt, 152)
+        end
+        --print(bt.."out", i[bt])
+        if i[nv] ~= nil then
+            print("upd" .. nv)
+            upd(nv, i[nv] + 3)
+        else
+            print(nv)
+            upd(nv, 999)
+        end
+
+        cqueues.sleep(10)
+
+
     until shutdown ~= false
 end)
 

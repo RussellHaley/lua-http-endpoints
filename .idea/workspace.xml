@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c55ee8f5-e014-41ae-bb1d-1237ee600eaf" name="Default" comment="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='">
+    <list default="true" id="c55ee8f5-e014-41ae-bb1d-1237ee600eaf" name="Default" comment="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='&#10;socketserver.conf - convert to use '='">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client.conf" afterPath="$PROJECT_DIR$/client.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/configuration.lua" afterPath="$PROJECT_DIR$/configuration.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/instrumentation.lua" afterPath="$PROJECT_DIR$/instrumentation.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lua_ws_client.lua" afterPath="$PROJECT_DIR$/lua_ws_client.lua" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/socketserver.conf" afterPath="$PROJECT_DIR$/socketserver.conf" />
     </list>
     <ignored path="LuaClient1.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,11 +29,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="lua_ws_client.lua" pinned="false" current-in-tab="false">
+      <file leaf-file-name="lua_ws_client.lua" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lua_ws_client.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="33" column="43" selection-start-line="33" selection-start-column="43" selection-end-line="33" selection-end-column="43" />
+            <state relative-caret-position="-198">
+              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -43,8 +42,8 @@
       <file leaf-file-name="Debugtesting.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Debugtesting.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="23" column="52" selection-start-line="23" selection-start-column="52" selection-end-line="23" selection-end-column="52" />
+            <state relative-caret-position="378">
+              <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -72,9 +71,6 @@
       </file>
       <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
-          <provider editor-type-id="MarkdownFxPreviewEditor">
-            <state />
-          </provider>
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="FIRST">
               <first_editor relative-caret-position="180">
@@ -84,13 +80,16 @@
               <second_editor />
             </state>
           </provider>
+          <provider editor-type-id="MarkdownFxPreviewEditor">
+            <state />
+          </provider>
         </entry>
       </file>
-      <file leaf-file-name="envb_socket_server.lua" pinned="false" current-in-tab="true">
+      <file leaf-file-name="envb_socket_server.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="486">
-              <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
+            <state relative-caret-position="36">
+              <caret line="2" column="41" selection-start-line="2" selection-start-column="41" selection-end-line="32" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -109,8 +108,8 @@
       <file leaf-file-name="instrumentation.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/instrumentation.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-396">
-              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+            <state relative-caret-position="306">
+              <caret line="125" column="50" selection-start-line="125" selection-start-column="50" selection-end-line="125" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -119,8 +118,8 @@
       <file leaf-file-name="configuration.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/configuration.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
-              <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+            <state relative-caret-position="486">
+              <caret line="120" column="0" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -173,10 +172,10 @@
         <option value="$PROJECT_DIR$/duarn1.lua" />
         <option value="$PROJECT_DIR$/notes.txt" />
         <option value="$PROJECT_DIR$/envb_socket_server.lua" />
+        <option value="$PROJECT_DIR$/configuration.lua" />
         <option value="$PROJECT_DIR$/Debugtesting.lua" />
         <option value="$PROJECT_DIR$/instrumentation.lua" />
         <option value="$PROJECT_DIR$/lua_ws_client.lua" />
-        <option value="$PROJECT_DIR$/configuration.lua" />
       </list>
     </option>
   </component>
@@ -195,7 +194,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="1" />
-    <option name="width" value="1906" />
+    <option name="width" value="1894" />
     <option name="height" value="1045" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -223,30 +222,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LuaWebsocketTest" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LuaWebsocketTest" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LuaWebsocketTest" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scratches" />
-      <pane id="PackagesPane">
-        <subPane />
-      </pane>
       <pane id="Scope">
         <subPane subId="Production">
           <PATH>
@@ -273,13 +248,27 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane">
+        <subPane />
+      </pane>
+      <pane id="Scratches" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lua-http-endpoints" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="SearchEverywhereHistoryKey" value="import file&#9;null&#9;null&#10;rename&#9;ACTION&#9;RenameElement&#10;login manager&#9;null&#9;null&#10;line num&#9;null&#9;null" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="fileTemplates" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
@@ -289,8 +278,44 @@
       <recent name="$USER_HOME$/Git/dwe" />
     </key>
   </component>
-  <component name="RunManager" selected="Lua Script.Debugtesting.lua (2)">
+  <component name="RunManager" selected="Lua Script.lua_ws_client.lua (1)">
+    <configuration default="false" name="lua_ws_client.lua" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="ALTERNATE_INTERPRETER" value="false" />
+      <envs />
+      <module name="lua-http-testing" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lua_ws_client.lua" />
+      <option name="PARAMETERS" value="" />
+      <method />
+    </configuration>
+    <configuration default="false" name="envb_socket_server.lua" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="ALTERNATE_INTERPRETER" value="false" />
+      <envs />
+      <module name="lua-http-testing" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/envb_socket_server.lua" />
+      <option name="PARAMETERS" value="" />
+      <method />
+    </configuration>
     <configuration default="false" name="Debugtesting.lua" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="ALTERNATE_INTERPRETER" value="false" />
+      <envs />
+      <module name="lua-http-testing" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Debugtesting.lua" />
+      <option name="PARAMETERS" value="" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Debugtesting.lua (1)" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="INTERPRETER_PATH" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -311,42 +336,6 @@
       <envs />
       <module name="lua-http-testing" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lua_ws_client.lua" />
-      <option name="PARAMETERS" value="" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Debugtesting.lua (1)" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="INTERPRETER_PATH" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="ALTERNATE_INTERPRETER" value="false" />
-      <envs />
-      <module name="lua-http-testing" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Debugtesting.lua" />
-      <option name="PARAMETERS" value="" />
-      <method />
-    </configuration>
-    <configuration default="false" name="lua_ws_client.lua (2)" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="INTERPRETER_PATH" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="ALTERNATE_INTERPRETER" value="false" />
-      <envs />
-      <module name="lua-http-testing" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lua_ws_client.lua" />
-      <option name="PARAMETERS" value="" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Debugtesting.lua (2)" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="INTERPRETER_PATH" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="ALTERNATE_INTERPRETER" value="false" />
-      <envs />
-      <module name="lua-http-testing" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Debugtesting.lua" />
       <option name="PARAMETERS" value="" />
       <method />
     </configuration>
@@ -777,19 +766,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua" />
-      <item index="1" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua (1)" />
-      <item index="2" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua (1)" />
-      <item index="3" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua (2)" />
-      <item index="4" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua (2)" />
+      <item index="0" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua" />
+      <item index="1" class="java.lang.String" itemvalue="Lua Script.envb_socket_server.lua" />
+      <item index="2" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua" />
+      <item index="3" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua (1)" />
+      <item index="4" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua (1)" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua (2)" />
-        <item index="1" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua (2)" />
-        <item index="2" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua (1)" />
-        <item index="3" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua (1)" />
-        <item index="4" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua" />
+        <item index="0" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua (1)" />
+        <item index="1" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua (1)" />
+        <item index="2" class="java.lang.String" itemvalue="Lua Script.Debugtesting.lua" />
+        <item index="3" class="java.lang.String" itemvalue="Lua Script.envb_socket_server.lua" />
+        <item index="4" class="java.lang.String" itemvalue="Lua Script.lua_ws_client.lua" />
       </list>
     </recent_temporary>
   </component>
@@ -818,7 +807,9 @@
       <workItem from="1474837459171" duration="8687000" />
       <workItem from="1474949025459" duration="9307000" />
       <workItem from="1475033851609" duration="7079000" />
-      <workItem from="1475123464157" duration="10327000" />
+      <workItem from="1475123464157" duration="12519000" />
+      <workItem from="1475167917596" duration="3206000" />
+      <workItem from="1475172173218" duration="5219000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Initial Commit&quot;">
       <created>1474703826348</created>
@@ -848,14 +839,21 @@
       <option name="project" value="LOCAL" />
       <updated>1475043981560</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='&#10;socketserver.conf - convert to use '='">
+      <created>1475134836216</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1475134836216</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="63147000" />
+    <option name="totallyTimeSpent" value="73764000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="0" width="1906" height="1045" extended-state="4" />
+    <frame x="1" y="0" width="1894" height="1045" extended-state="4" />
     <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -869,10 +867,10 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11637931" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11605206" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17028199" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
@@ -902,7 +900,8 @@
     <MESSAGE value="Made some changes. Trying stuff" />
     <MESSAGE value="Added new instrumentation.lua&#10;Added configuration.lua&#10;started using message1 as message base&#10;" />
     <MESSAGE value="Fixed errors in configuration.lua&#10;Moved instrumentation.lua to use configuration.lua&#10;cleaned up processing and added conf files for server and client configuration.&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed errors in configuration.lua&#10;Moved instrumentation.lua to use configuration.lua&#10;cleaned up processing and added conf files for server and client configuration.&#10;" />
+    <MESSAGE value="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='&#10;socketserver.conf - convert to use '='" />
+    <option name="LAST_COMMIT_MESSAGE" value="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='&#10;socketserver.conf - convert to use '='" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -971,9 +970,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="MarkdownFxPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
           <first_editor relative-caret-position="180">
@@ -982,6 +978,9 @@
           </first_editor>
           <second_editor />
         </state>
+      </provider>
+      <provider editor-type-id="MarkdownFxPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
@@ -1025,9 +1024,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="MarkdownFxPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
           <first_editor relative-caret-position="0">
@@ -1036,6 +1032,9 @@
           </first_editor>
           <second_editor />
         </state>
+      </provider>
+      <provider editor-type-id="MarkdownFxPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
@@ -1063,9 +1062,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="MarkdownFxPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
           <first_editor relative-caret-position="0">
@@ -1074,6 +1070,9 @@
           </first_editor>
           <second_editor />
         </state>
+      </provider>
+      <provider editor-type-id="MarkdownFxPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
@@ -1181,15 +1180,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownFxPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
           <first_editor relative-caret-position="180">
@@ -1198,6 +1188,15 @@
           </first_editor>
           <second_editor />
         </state>
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownFxPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/Git/ugent/ugent.lua">
@@ -1240,42 +1239,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="41" selection-start-line="2" selection-start-column="41" selection-end-line="32" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Debugtesting.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="23" column="52" selection-start-line="23" selection-start-column="52" selection-end-line="23" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/instrumentation.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-396">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lua_ws_client.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="33" column="43" selection-start-line="33" selection-start-column="43" selection-end-line="33" selection-end-column="43" />
+        <state relative-caret-position="378">
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/configuration.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+        <state relative-caret-position="486">
+          <caret line="120" column="0" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/envb_socket_server.lua">
+    <entry file="file://$PROJECT_DIR$/instrumentation.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
+        <state relative-caret-position="306">
+          <caret line="125" column="50" selection-start-line="125" selection-start-column="50" selection-end-line="125" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lua_ws_client.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-198">
+          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
           <folding />
         </state>
       </provider>

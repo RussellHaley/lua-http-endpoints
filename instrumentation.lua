@@ -103,17 +103,12 @@ end
 
 Instr.UpdateInstrumentation = function (key, value)
     local e = lightningmdb.env_create()
+    Instr[key] = value
     e:open(Instr.data_directory, 0, 420)
     local t = e:txn_begin(nil, 0)
     local d = t:dbi_open(nil, 0)
 
-    if not key then
-        for i, v in ipairs(Instr) do
-            t:put(d, i, v, 0)
-        end
-    else
-        t:put(d,key,value,0)
-    end
+    t:put(d, key, value, 0)
 
     t:commit()
     e:close()
@@ -128,9 +123,10 @@ Instr.ReadInstrumentation = function ()
     local cursor = t:cursor_open(d)
 
     local data = {}
+    data[":data_directory"] = Instr.data_directory
     local k
     for k, v in cursor_pairs(cursor) do
-        data:insert(k,v)
+        data[k] = v
     end
 
     cursor:close()
