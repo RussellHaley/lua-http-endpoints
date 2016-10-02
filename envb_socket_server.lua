@@ -16,12 +16,14 @@ function PrintTable(t)
 end
 
 
-local timeout = 2
+--local timeout = 2
 
+--- Reply is where we process the request from the client
 local function reply(resp)
 
-    local req_body = assert(resp.stream:get_body_as_string(timeout))
-    local req_body_type = resp.request_headers:get "content-type"
+    --Not used right now.
+    --local req_body = assert(resp.stream:get_body_as_string(timeout))
+    --local req_body_type = resp.request_headers:get "content-type"
 
     --1) check the request type. If it's a ws connection, then upgrade it?
 

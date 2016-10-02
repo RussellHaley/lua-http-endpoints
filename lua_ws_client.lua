@@ -1,8 +1,4 @@
---- lua_ws_client.
--- Created by IntelliJ IDEA.
--- Author: russellh
--- Date: 9/19/16
-
+--- script: lua_ws_client.lua
 
 --local http_request = require "http.request"
 --local headers, stream = assert(http_request.new_from_uri("http://example.com"):go())
@@ -12,13 +8,21 @@
 --end
 --print(body)
 
-
+--- The cqueue library
 local cqueues = require "cqueues"
+--- lua-http websockets
 local websocket = require "http.websocket"
+--- json parser for converting tables to json
 local json = require "dkjson"
+--- a base message. I'm not very good at
+-- Prototyping in Lua yet
 local message1 = require "message1"
+--- See: instrumentation.lua
 local instrumentation = require "instrumentation"
+--- See: configuration.lua
 local configuration = require "configuration"
+--- A little library for file manipulation,
+-- familiar patterns for a C# developer.
 local file = require "file"
 
 local i = instrumentation.new("client.conf")
@@ -28,26 +32,62 @@ local upd = i.UpdateInstrumentation
 local conf = configuration.new("client.conf", false, false)
 i.debug_file_path = conf.base_path .. "/" .. conf.debug_file_name
 
-local InputWrapContinue = true
+--- Shutdown flag. Set to True to end all processes
 local Shutdown = false
-local DEBUG = arg[1] or false
+--- Debug flag. Enables Debugging output from the client.
+DEBUG = arg[1] or false
 
-local function getUUID()
-    local handle = io.popen("uuidgen")
-    local val, lines = handle:read("*a")
-    val = val:gsub("^%s*(.-)%s*$", "%1")
-    return val
-end
 
-local function WriteError(err, errno, debugOut)
-    local str = os.date("%Y-%m-%d_%H%M%S") .. " - Error No:" .. errno .. "- " .. err
+
+--- Writes errors to a file.
+-- This needs serious work, or you should
+-- just get a proper logger.
+-- param: errno The error number provided by the exit call
+-- param: err The error message provided by the exit call
+-- param: debugOut true outputs the info to stdio
+local function WriteError(errno, err, debugOut)
+    if not errno then errno = "na" end
+    if not err then err = "na" end
+    local str = os.date("%Y-%m-%d_%H%M%S") .. " - Error:" .. errno .. "- " .. err .. "\n"
     file.write(i.debug_file_path, str, 'a')
     if debugOut then
         print(str)
     end
 end
 
-local function InitRecieve(cq, ws)
+--- Writes a line to the log. Appends Linefeed.
+-- param: message - string for logging
+local function WriteLog(message)
+    local str = os.date("%Y-%m-%d_%H%M%S") .. message .. "\n"
+    file.write(i.debug_file_path, str, 'a')
+    if DEBUG then
+        print(str)
+    end
+end
+
+
+--- Get a UUID from the OS
+-- return: Returns a system generated UUID
+-- such as "4f1c1fbe-87a7-11e6-b146-0c54a518c15b"
+-- usage: 4f1c1fbe-87a7-11e6-b146-0c54a518c15b
+local function GetUUID()
+    local handle = io.popen("uuidgen")
+    local val, lines
+    if handle then
+        val, lines = handle:read("*a")
+        --Don't remembe what this does, I think
+        -- it strips whitespace?
+        val = val:gsub("^%s*(.-)%s*$", "%1")
+    else
+        WriteError(0, "Failed to generate UUID");
+    end
+    return val
+end
+
+--- InitReceive. Starts the CQ wrap that listens on the websocket
+-- param: cq - The cqueue to which we will add the routine
+-- param: ws - The websocket reference
+local function InitReceive(cq, ws)
     cq:wrap(function()
         repeat
             local response, err, errno = ws:receive() -- does this return an error message if it fails?
@@ -62,11 +102,16 @@ local function InitRecieve(cq, ws)
     end)
 end
 
-local function InitStatusUpdate(cq, ws)
+--- InitStatusUpdate. Starts the cqueue wrap for sending
+-- status updates to the server.
+-- param: cq - The cqueue to which we will add the routine
+-- param: ws - The websocket reference
+-- param: sleepPeriod - The periodicity of the status update
+local function InitStatusUpdate(cq, ws, sleepPeriod)
     cq:wrap(function()
         repeat
             local msg = message1.new()
-            msg.uuid = getUUID()
+            msg.uuid = GetUUID()
             local items = i.ReadInstrumentation()
             for k, v in pairs(items) do
                 msg.body[k] = v
@@ -77,54 +122,63 @@ local function InitStatusUpdate(cq, ws)
             if not success then
                 WriteError(err, errno, DEBUG)
             end
-            cqueues.sleep(3)
+            --This value should come from the config file.
+            cqueues.sleep(sleepPeriod)
         until Shutdown == true
     end)
 end
 
-local function toggleInputWrap(start, cq, ws)
-    if start then
+--- InitStdioInput. A cq wrap for input from stdio. It's
+-- purpose is for manual inupt and debugging.
+-- param: cq - The cqueue to which we will add the routine
+local function InitStdioInput(cq)
         cq:wrap(function()
             repeat
                 io.stdout:write("Input> ")
                 cqueues.poll({ pollfd = 0; events = "r" }) -- wait until data ready to read on stdin
                 local data = io.stdin:read "*l" -- blockingly read a line. shouldn't block if tty is in line buffered mode.
                 --                assert(ws:send(data)) -- echo it back?
-            until not InputWrapContinue
+            until Shutdown == true
         end)
-
-    else
-        InputWrapContinue = false
-    end
 end
 
+--- InitDebugInput. Creates sample data for testing.
+-- param: cq - The cqueue to which we will add the routine
 local function InitDebugInput(cq)
     cq:wrap(function()
         repeat
             local bt = "board_temperature"
             local nv = "new_value_2"
 
+            local bt_val
+            local nv_val
+
+            bt_val = 152
+            nv_val = 999
+
             if i[bt] ~= nil then
-                upd(bt, i[bt] + 152)
-            else
-                upd(bt, 152)
+                bt_val = i[bt] + 152
             end
-            --print(bt.."out", i[bt])
+            upd(bt, bt_val)
+
             if i[nv] ~= nil then
-                print("upd" .. nv)
-                upd(nv, i[nv] + 3)
-            else
-                print(nv)
-                upd(nv, 999)
+                nv_val = i[nv] + 3
             end
 
+            upd(nv, nv_val)
+
+            if DEBUG then
+                print(nv, nv_val)
+                print(bt, bt_val)
+            end
             cqueues.sleep(10)
-
-
         until Shutdown == true
     end)
 end
 
+--- StartWraps. Start all the wraps. This give us ~some logging
+-- if the step fails.
+-- param:cq - The cqueue to start the routines on.
 local function StartWraps(cq)
     local success, message
     repeat
@@ -140,15 +194,15 @@ local function Begin()
     assert(ws:connect())
 
     InitDebugInput(cq, ws)
-    InitStatusUpdate(cq, ws)
-    InitRecieve(cq, ws)
+    InitStatusUpdate(cq, ws, conf.status_period)
+    InitReceive(cq, ws)
     local success, err
     repeat
         success, err = StartWraps(cq)
         if not success then
+            WriteLog("The main cqueue failed to step.")
             WriteError(0, err, DEBUG)
         end
-
     until Shutdown == true
 end
 

@@ -1,17 +1,9 @@
---- Configuration Reader and Writer.
--- @module Configuration
--- @author russellh
--- @Date 2016-09-29
--- Created by IntelliJ IDEA
--- Date: 9/26/16
--- Time: 11:37 PM
-
---[[
--- Load a conf file using loadstring
---Remarks: This doesn't currently work, even though the table seems valid
--- ]]
+--- @script configuration.lua
 local conf = {}
 
+--loadConfFile.
+--a local fucntion for reading in a configuration file
+--and outputing a table.
 local function loadConfFile(fn)
     local f = io.open(fn, 'r')
     if f == nil then return {} end
@@ -41,7 +33,7 @@ local function trim(s)
     return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
---- Read a conf file into a table.
+-- Read a conf file into a table.
 -- Reads a configuration file in key=value notation.
 -- Can include a couple of transforms but it really needs to
 -- use lpeg to do the transformations.
