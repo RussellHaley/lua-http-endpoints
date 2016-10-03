@@ -1,4 +1,4 @@
---- script: lua_ws_client.lua
+--- script: exb_client.lua
 
 --local http_request = require "http.request"
 --local headers, stream = assert(http_request.new_from_uri("http://example.com"):go())
@@ -16,7 +16,7 @@ local websocket = require "http.websocket"
 local json = require "dkjson"
 --- a base message. I'm not very good at
 -- Prototyping in Lua yet
-local message1 = require "message1"
+local message1 = require "message_base"
 --- See: instrumentation.lua
 local instrumentation = require "instrumentation"
 --- See: configuration.lua
@@ -25,11 +25,16 @@ local configuration = require "configuration"
 -- familiar patterns for a C# developer.
 local file = require "file"
 
-local i = instrumentation.new("client.conf")
+--Lua only serializer package.
+--local serialize = require "ser"
+--Used to generate Cyclicle Redundancy Checksum
+--local CRC = require 'crc32lua'
+
+local i = instrumentation.new("exb_client.conf")
 local upd = i.UpdateInstrumentation
 
 --local conf = configuration.new("/etc/rc.conf",true)
-local conf = configuration.new("client.conf", false, false)
+local conf = configuration.new("exb_client.conf", false, false)
 i.debug_file_path = conf.base_path .. "/" .. conf.debug_file_name
 
 --- Shutdown flag. Set to True to end all processes
@@ -58,6 +63,7 @@ end
 --- Writes a line to the log. Appends Linefeed.
 -- param: message - string for logging
 local function WriteLog(message)
+
     local str = os.date("%Y-%m-%d_%H%M%S") .. message .. "\n"
     file.write(i.debug_file_path, str, 'a')
     if DEBUG then

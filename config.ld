@@ -1,5 +1,6 @@
+title = "Example B"
 all = true
-colon = true
+--colon = true
 
 
 new_type("author", "Author")

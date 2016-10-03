@@ -1,31 +1,35 @@
---- @script configuration.lua
+--- Loads a configuration files and returns a table of key value pairs
+-- Can also write a line item. If it exists, it updates the value
+
+--- Table returned with conf KVPs.
 local conf = {}
 
---loadConfFile.
---a local fucntion for reading in a configuration file
+---
+-- This funciton is not tested.
+-- a local fucntion for reading in a configuration file
 --and outputing a table.
+-- @param fn - path to the file loaded
 local function loadConfFile(fn)
     local f = io.open(fn, 'r')
     if f == nil then return {} end
     local str = f:read('*a') .. '\n'
     f:close()
     local res = 'return {'
+
     for line in str:gmatch("(.-)[\r\n]") do
         line = line:gsub('^%s*(.-)%s*$"', '%1') -- trim line
         -- ignore empty lines and comments
         if line ~= '' and line:sub(1, 1) ~= '#' then
             line = line:gsub("'", "\\'") -- escape all '
-            line = line:gsub("=%s*", "='", 1)
+            line = line:gsub("=%s*", "='", 1) -- match on +
             res = res .. line .. "',"
         end
     end
     res = res:sub(1, -2)
     res = res .. '}'
 
-    print(res)
-    --t = {server_port='8000',server_url ='localost',base_path ='confFilePath',data_dir_name ='data'}
-    --local t = assert(loadstring(res)())
-    return t -- { server_port = '8000', server_url = 'localhost', base_path = 'confFilePath', data_dir_name = 'data' }
+    local t = assert(load(res)())
+    return t
 end
 
 
@@ -33,11 +37,14 @@ local function trim(s)
     return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
--- Read a conf file into a table.
+--- Read a conf file into a table.
 -- Reads a configuration file in key=value notation.
 -- Can include a couple of transforms but it really needs to
 -- use lpeg to do the transformations.
 -- @function ReadConf
+-- @param filePath Path of the file to open
+-- @param removequotes Removed the quotes around text items (useful in freebsd)
+-- @param debug Outputs the table for review
 local function ReadConf(filePath, removequotes, debug)
     local fp = io.open(filePath, "r")
     if fp then
@@ -92,7 +99,10 @@ local function ReadConf(filePath, removequotes, debug)
     return conf
 end
 
-local function SetItem(key, value)
+--- Sets a value for the given key if it exists, if not, creates it.
+-- @param key The key/option name
+-- @param value The new value to set for given key
+conf.SetItem = function(key, value)
     --(1) read all the lines into an array
     local f, e = io.open(file)
     -- check that e!
@@ -123,11 +133,7 @@ local function SetItem(key, value)
     f:close()
 end
 
---ReadConf.SetConfItem = function(item, enabled)
---    --print(item,enabled)
---    SetConf(item, enabled)
---end
-
+--- new. Creates a new configuration table based on the file path given.
 local function new(file, removequotes, debug)
     return ReadConf(file, removequotes, debug)
 end

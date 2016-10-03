@@ -1,3 +1,10 @@
+--- Instrumentation.
+-- Creates a new persistence table for running values and data sets based on an lmdb database
+-- The current implementation is somewhat restricted to simple key value pairs.
+-- There are two update methodoldies:
+-- 1)Persist the entire table at the same time or
+-- 2)Persiste a single key value item
+
 --[[
 1) start a new application database for persistent values
 - get basedir from a config file
@@ -12,14 +19,19 @@
 
 ]] --
 
+--- The table with instrumentation values
 local Instr = {}
 
+--- LMDB Wrapper
 local lightningmdb_lib = require("lightningmdb")
+--- Filesystem
 local lfs = require("lfs")
+
+--- Configuration settings
 local configuration = require("configuration")
 
+--Set up lmdb and a table of constants
 local lightningmdb = _VERSION >= "Lua 5.2" and lightningmdb_lib or lightningmdb
-
 local MDB = setmetatable({}, {
     __index = function(t, k)
         return lightningmdb["MDB_" .. k]
@@ -27,7 +39,7 @@ local MDB = setmetatable({}, {
 })
 
 
-
+--Tried to protect values but it didn't work.
 local function protect(tbl)
     return setmetatable({}, {
         __index = tbl,
@@ -38,6 +50,7 @@ local function protect(tbl)
     })
 end
 
+--- Stat. Get Statistics about the database
 Instr.Stat = function()
     local e = lightningmdb.env_create()
     e:open(Instr["data_directory"], 0, 420)
@@ -47,6 +60,7 @@ Instr.Stat = function()
 
 end
 
+--- DirectoryExists. Internal for check directory for data files
 local function DirectoryExists(name)
     if type(name) ~= "string" then return false end
     local cd = lfs.currentdir()
@@ -55,12 +69,11 @@ local function DirectoryExists(name)
     return is
 end
 
---[[
-Write Instrumentation
-This function write the key value pairs in the Instrumentation table
-to the application database. If the application dies, these values are
-persisted for diagnostics.
-]] --
+
+--- WriteInstrumentation
+-- This function write the entire Instrumentation table
+-- to the application database. If the application dies, these values are
+-- persisted for diagnostics.
 Instr.WriteInstrumentation = function ()
     local e = lightningmdb.env_create()
     e:open(Instr["data_directory"], 0, 420)
@@ -70,17 +83,16 @@ Instr.WriteInstrumentation = function ()
     local count = 0
 
     for key, value in pairs(Instr) do
-        local rc = t:put(d, key, value, MDB.NOOVERWRITE)
---        count = count + 1
+        assert(t:put(d, key, value, MDB.NOOVERWRITE))
     end
     t:commit()
     PrintStat(e)
     e:close()
 end
 
---[[
---iterate through the data returned by LMDB
-]]--
+
+--- cursor_pairs. Use a coroutine to iterate through the
+-- open lmdb data set
 local function cursor_pairs(cursor_, key_, op_)
     return coroutine.wrap(function()
         local k = key_
@@ -93,7 +105,7 @@ local function cursor_pairs(cursor_, key_, op_)
     end)
 end
 
-
+--- Create a UUID for unique keys. This is no longer used here I don't think
 local function GetUuid()
     local handle = io.popen("uuidgen")
     local val, lines = handle:read("*a")
@@ -101,6 +113,8 @@ local function GetUuid()
     return val
 end
 
+--- UpdateInstrumentation
+-- Set a key value pair
 Instr.UpdateInstrumentation = function (key, value)
     local e = lightningmdb.env_create()
     Instr[key] = value
@@ -114,7 +128,8 @@ Instr.UpdateInstrumentation = function (key, value)
     e:close()
 end
 
-
+--- ReadInsrumentation
+-- read in the entire database
 Instr.ReadInstrumentation = function ()
     local e = lightningmdb.env_create()
     e:open(Instr.data_directory, 0, 420)
@@ -139,28 +154,21 @@ local function RemoveFileExtention(url)
     return url:gsub(".[^.]*$", "")
 end
 
-
---[[function CheckContinue()
-  print("continue?")
-  s = io.read("*l") 
-  if s:upper() == "N" then
-   End()
-  end    
-end]]
-
-Instr.Close = function()
+--- Cleanup. If configured, removes the data directory
+Instr.Cleanup = function()
     if Instr.rm_data_dir then
         os.execute("rm -rf " .. Instr.data_directory)
         print("database removed:".. Instr.data_directory )
     end
 end
 
-
+--- New.
+-- Creates a new instance of a database
 local function new(confFilePath)
-
-
+    --Load the configuration file
     local conf = configuration.new(confFilePath)
 
+    --Set up the database and check if we are supposed to remove the database when done.
     Instr["data_directory"] = conf["base_path"] .. "/" .. conf["data_dir_name"] .. "/" .. os.date("%Y-%m-%d_%H%M%S")
     Instr.rm_data_dir = conf.rm_data_dir
     if DirectoryExists(Instr.data_directory) then
@@ -183,9 +191,4 @@ local function new(confFilePath)
 end
 
 return {new = new;}
-
---[[function StartWatchDir(uri)
-    --path, callback, timeout_in_milliseconds, exit_on_event, add_or_modify_only
-  assert(Evq:add_dirwatch(uri, OnFilesystemChanged, 10000000, false, true))
-end]]
 

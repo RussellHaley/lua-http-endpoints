@@ -1,3 +1,5 @@
+--- This is the server script that runs the websocket/http server
+
 local port = arg[1] or "8000"
 
 local nice_server = require "nice_server"
@@ -7,7 +9,7 @@ local serpent = require "serpent"
 
 local configuration = require "configuration"
 
-local conf = configuration.new([[socketserver.conf]])
+local conf = configuration.new([[exb_server.conf]])
 
 function PrintTable(t)
     for k, v in pairs(t) do
