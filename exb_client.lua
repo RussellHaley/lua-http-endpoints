@@ -1,12 +1,8 @@
---- script: exb_client.lua
-
---local http_request = require "http.request"
---local headers, stream = assert(http_request.new_from_uri("http://example.com"):go())
---local body = assert(stream:get_body_as_string())
---if headers:get ":status" ~= "200" then
---    error(body)
---end
---print(body)
+--- Opens a websocket connection with
+-- the server_url option specified in the client conf file.
+-- @author Russell Haley, Created with IntelliJ IDEA.
+-- @copyright 2016
+-- @license BSD 2 Clause. See License.txt
 
 --- The cqueue library
 local cqueues = require "cqueues"
@@ -222,5 +218,13 @@ Begin()
 
 
 
+
+--local http_request = require "http.request"
+--local headers, stream = assert(http_request.new_from_uri("http://example.com"):go())
+--local body = assert(stream:get_body_as_string())
+--if headers:get ":status" ~= "200" then
+--    error(body)
+--end
+--print(body)
 
 

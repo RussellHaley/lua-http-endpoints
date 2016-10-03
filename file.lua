@@ -1,10 +1,7 @@
---- Basic file functions for Lua.
---
--- **License:** MIT  
---  **Source:** [GitHub](https://github.com/gummesson/file.lua)
---
+--- Basic file functions for Lua. Familiar patterns for an old C# developer.
+-- @author gummesson [GitHub](https://github.com/gummesson/file.lua)
+-- @license MIT. See License.txt for details
 
--- ## References
 
 local io, os, error = io, os, error
 

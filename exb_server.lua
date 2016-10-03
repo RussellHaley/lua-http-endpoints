@@ -1,4 +1,7 @@
 --- This is the server script that runs the websocket/http server
+-- @author Russell Haley, Created with IntelliJ IDEA.
+-- @copyright 2016
+-- @license BSD 2 Clause. See License.txt
 
 local port = arg[1] or "8000"
 
@@ -20,14 +23,12 @@ end
 
 --local timeout = 2
 
---- Reply is where we process the request from the client
+--- Reply is where we process the request from the client.
+-- The system upgrades to a websocket if the ws or wss protocols are used.
+-- @param resp A table with response meta data retrieved from the request.
+-- This would typically be used in an http response.
 local function reply(resp)
 
-    --Not used right now.
-    --local req_body = assert(resp.stream:get_body_as_string(timeout))
-    --local req_body_type = resp.request_headers:get "content-type"
-
-    --1) check the request type. If it's a ws connection, then upgrade it?
 
     for k, v in pairs(resp.request_headers) do
         print(k, v)
@@ -70,6 +71,14 @@ local function reply(resp)
         end
 
     until not data or data == "QUIT"
+
+
+    --Not used right now.
+    --local req_body = assert(resp.stream:get_body_as_string(timeout))
+    --local req_body_type = resp.request_headers:get "content-type"
+
+    --1) check the request type. If it's a ws connection, then upgrade it?
+
     --This would be used in standard http web server
 
     --    resp.headers:upsert(":status", "200")

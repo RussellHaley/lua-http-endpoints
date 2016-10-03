@@ -1,13 +1,14 @@
---- message1
--- A base class for all messages
--- Created by IntelliJ IDEA.
+--- A base class for all messages
+-- @author Russell Haley, Created with IntelliJ IDEA.
+-- @copyright 2016
+-- @license BSD 2 Clause. See License.txt
+
 
 
 --- The base message for all communications.
 local message = {}
 
---basic construc of a message
---- sequence number from 0 to 255
+--- Sequence number from 0 to 255
 message.sequence = 0
 --- Unique Client ID
 message.client_id = 0
@@ -19,12 +20,11 @@ message.source = ""
 message.destination = ""
 --- Type of message
 message.type = "status"
---- Message Body. Another table
+--- The message specific contents of a transmission
 message.body = {}
 
 
---- new
--- Returns a new message.
+--- Returns a new message.
 local function new()
     return message;
 end

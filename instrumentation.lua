@@ -4,6 +4,9 @@
 -- There are two update methodoldies:
 -- 1)Persist the entire table at the same time or
 -- 2)Persiste a single key value item
+-- @author Russell Haley, Created with IntelliJ IDEA.
+-- @copyright 2016
+-- @license BSD 2 Clause. See License.txt
 
 --[[
 1) start a new application database for persistent values

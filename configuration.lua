@@ -1,7 +1,10 @@
 --- Loads a configuration files and returns a table of key value pairs
 -- Can also write a line item. If it exists, it updates the value
-
 --- Table returned with conf KVPs.
+-- @author Russell Haley, Created with IntelliJ IDEA.
+-- @copyright 2016
+-- @license BSD 2 Clause. See License.txt
+
 local conf = {}
 
 ---
