@@ -32,64 +32,43 @@ local function reply(resp)
         print(k, v)
     end
 
-    local scheme = resp.request_headers:get(":scheme")
-    local upgrade
-    if resp.request_headers:get("upgrade") then
-        upgrade = resp.request_headers:get("upgrade")
-    else
-        upgrade = "none"
-    end
-    local sws_version
 
-    if resp.request_headers:get("sec-websocket-version") then
-        sws_version = tonumber(resp.request_headers:get("sec-websocket-version"))
-    else
-        sws_version = 0
-    end
+    local ws = websocket.new_from_stream(resp.stream, resp.request_headers)
+    if ws then
 
+        assert(ws:accept())
+        assert(ws:send("Welcome To exb Server"))
 
+        repeat
+            local data = assert(ws:receive())
+            if data ~= nil then
+                local json, pos, err = dkjson.decode(data, 1, nil)
+                if not err then
+                    print(serpent.dump(json))
 
-    if scheme:upper() == "HTTP" then
-
-        if upgrade:upper() == "WEBSOCKET" and sws_version >= 13 then
-            local ws = websocket.new_from_stream(resp.stream, resp.request_headers)
-            assert(ws:accept())
-            assert(ws:send("Welcome To exb Server"))
-
-            repeat
-                local data = assert(ws:receive())
-                if data ~= nil then
-                    local json, pos, err = dkjson.decode(data, 1, nil)
-                    if not err then
-                        print(serpent.dump(json))
-
-                        if json[1] == "ECHO" then
-                            print "echo echo echoecho..."
-                            ws:send("echo2")
-                        elseif json[1] == "TO BAD SAM" then
-                            print "Nice knownin ya bud"
-                            ws:send("echo2")
-                        elseif json[1] == "ECHO3" then
-                            print "now this is just silly"
-                            ws:send("echo2")
-                        end
-                    else
-                        print(data)
-                        print(err)
-                        ws:send(data)
+                    if json[1] == "ECHO" then
+                        print "echo echo echoecho..."
+                        ws:send("echo2")
+                    elseif json[1] == "TO BAD SAM" then
+                        print "Nice knownin ya bud"
+                        ws:send("echo2")
+                    elseif json[1] == "ECHO3" then
+                        print "now this is just silly"
+                        ws:send("echo2")
                     end
                 else
-                    print "NIL DATA"
+                    print(data)
+                    print(err)
+                    ws:send(data)
                 end
+            else
+                print "NIL DATA"
+            end
 
-            until not data or data == "QUIT"
-        else
-            resp.body = "No can do bub"
-        end
+        until not data or data == "QUIT"
     else
-        resp.body = "Not an http request"
+        resp.body = "No can do bub"
     end
-
     --Not used right now.
     --local req_body = assert(resp.stream:get_body_as_string(timeout))
     --local req_body_type = resp.request_headers:get "content-type"

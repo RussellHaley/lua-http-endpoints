@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c55ee8f5-e014-41ae-bb1d-1237ee600eaf" name="Default" comment="Changed some patterns. Get Shutdown variable to work and close the application.">
+    <list default="true" id="c55ee8f5-e014-41ae-bb1d-1237ee600eaf" name="Default" comment="Code Cleanup.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/exb_client.conf" afterPath="$PROJECT_DIR$/exb_client.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/exb_client.lua" afterPath="$PROJECT_DIR$/exb_client.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/exb_server.lua" afterPath="$PROJECT_DIR$/exb_server.lua" />
     </list>
@@ -27,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="exb_server.lua" pinned="false" current-in-tab="false">
+      <file leaf-file-name="exb_server.lua" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/exb_server.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1548">
-              <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+            <state relative-caret-position="-95">
+              <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -117,11 +118,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exb_client.lua" pinned="false" current-in-tab="true">
+      <file leaf-file-name="exb_client.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exb_client.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-59">
-              <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+            <state relative-caret-position="576">
+              <caret line="219" column="26" selection-start-line="219" selection-start-column="26" selection-end-line="219" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -863,7 +864,7 @@
       <workItem from="1475386263968" duration="9040000" />
       <workItem from="1475466954449" duration="8370000" />
       <workItem from="1475555580283" duration="8834000" />
-      <workItem from="1475640549678" duration="4866000" />
+      <workItem from="1475640549678" duration="9285000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Initial Commit&quot;">
       <created>1474703826348</created>
@@ -942,11 +943,18 @@
       <option name="project" value="LOCAL" />
       <updated>1475564559923</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Code Cleanup.">
+      <created>1475645484875</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1475645484875</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="120497000" />
+    <option name="totallyTimeSpent" value="124916000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="0" width="1864" height="1045" extended-state="4" />
@@ -998,12 +1006,12 @@
     <MESSAGE value="Fixed errors in configuration.lua&#10;Moved instrumentation.lua to use configuration.lua&#10;cleaned up processing and added conf files for server and client configuration.&#10;" />
     <MESSAGE value="&#10;configuration.lua - fixed ReadConf to work with '='&#10;instrumentation.lua -  Cleanup&#10;lua_ws_client.lua - use configuration.lua&#10;client.conf - convert to '='&#10;socketserver.conf - convert to use '='" />
     <MESSAGE value="Minor update to message. Got an error in client after an hour of running." />
-    <MESSAGE value="Code Cleanup." />
     <MESSAGE value="Cleaning up code. Testing LDoc. Added a config.ld file for LDoc." />
     <MESSAGE value="renamed client and server files to exb_client.lua and exb_server.lua&#10;renamed conf files to match applciation files&#10;Updated all comments for Ldoc&#10;Renamed message1 to message_base.lua&#10;" />
     <MESSAGE value="More Documentation updates.&#10; -Added project title and description to config.ld&#10;&#10;Added Licenses and license.txt&#10;" />
     <MESSAGE value="Changed some patterns. Get Shutdown variable to work and close the application." />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed some patterns. Get Shutdown variable to work and close the application." />
+    <MESSAGE value="Code Cleanup." />
+    <option name="LAST_COMMIT_MESSAGE" value="Code Cleanup." />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1011,7 +1019,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/exb_server.lua</url>
-          <line>76</line>
+          <line>59</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="lua-line">
@@ -1021,7 +1029,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/exb_client.lua</url>
-          <line>113</line>
+          <line>117</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
@@ -1327,18 +1335,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exb_server.lua">
+    <entry file="file://$PROJECT_DIR$/exb_client.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1548">
-          <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+        <state relative-caret-position="576">
+          <caret line="219" column="26" selection-start-line="219" selection-start-column="26" selection-end-line="219" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exb_client.lua">
+    <entry file="file://$PROJECT_DIR$/exb_server.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-59">
-          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+        <state relative-caret-position="-95">
+          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
           <folding />
         </state>
       </provider>

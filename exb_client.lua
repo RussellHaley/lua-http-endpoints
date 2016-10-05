@@ -34,6 +34,10 @@ local conf = configuration.new("exb_client.conf", false, false)
 i.debug_file_path = conf.base_path .. "/" .. conf.debug_file_name
 local debug_file;
 
+local cq;
+
+local ws;
+
 --- Shutdown flag. Set to True to end all processes
 local Shutdown = false
 --- Debug flag. Enables Debugging output from the client.
@@ -91,7 +95,7 @@ end
 --- InitReceive. Starts the CQ wrap that listens on the websocket
 -- param: cq - The cqueue to which we will add the routine
 -- param: ws - The websocket reference
-local function Receive(ws)
+local function Receive()
     repeat
         local response, err, errno = ws:receive() -- does this return an error message if it fails?
         if not response then
@@ -109,7 +113,7 @@ end
 -- param: cq - The cqueue to which we will add the routine
 -- param: ws - The websocket reference
 -- param: sleepPeriod - The periodicity of the status update
-local function StatusUpdate(ws, sleepPeriod)
+local function StatusUpdate(sleepPeriod)
     repeat
         local msg = message1.new()
         msg.uuid = GetUUID()
@@ -168,7 +172,7 @@ end
 
 local function StopServices()
     Shutdown = true
-
+    ws:close()
     LogInfo("System shutdown initiated.")
 end
 
@@ -186,51 +190,51 @@ local function StdioInput()
     until Shutdown == true
 end
 
---- StartWraps. Start all the wraps. This give us ~some logging
--- if the step fails.
--- param:cq - The cqueue to start the routines on.
-local function Initialize(cq, ws)
-    cq:wrap(Receive, ws)
-    cq:wrap(StdioInput)
-    cq:wrap(DebugInput)
-    cq:wrap(StatusUpdate, ws, conf.status_period)
-    return true
-end
 
---- Starts all processing in the applicaiton.
-local function Begin()
+local function Run()
+
     debug_file = io.open(i.debug_file_path, 'a')
 
     LogInfo("Starting client service on " .. os.date("%b %d, %Y %X"))
 
-    local cq = cqueues.new()
-    local ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
-    local ws_ok, err, errno = ws:connect()
-    if ws_ok then
-        local init_ok = Initialize(cq, ws)
+    cq = cqueues.new()
+    ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
 
-        if init_ok then
-            repeat
-                local cq_ok, msg, errno = cq:step()
-                if cq_ok then
-                    LogInfo("Step")
-                else
+    cq:wrap(Receive)
+    cq:wrap(StdioInput)
+    cq:wrap(DebugInput)
+    cq:wrap(StatusUpdate, conf.status_period)
 
-                    LogInfo("The main cqueue failed to step.")
-                    LogError(errno, msg)
-                end
-            until Shutdown == true or cq:empty()
-            ws:close()
+    repeat
+        local ws_ok, err, errno = ws:connect()
+        if ws_ok then
+            LogInfo("Connected to ..how do I get the address back?")
+            cq:loop()
+            --If this falls out, check for errors before looping again
         else
-            LogError(99, "Failed to initialize the sub routines for the application.")
+            LogError(err, errno)
+            LogInfo("Failed to connect. Sleeping for " .. conf.connect_sleep)
+            cqueues.sleep(conf.connect_sleep)
         end
-    else
-    end
+
+    until Shutdown == true
+
+    --[[repeat
+        local cq_ok, msg, errno = cq:step()
+        if cq_ok then
+            LogInfo("Step")
+        else
+
+            LogInfo("The main cqueue failed to step.")
+            LogError(errno, msg)
+        end
+    until Shutdown == true or cq:empty()
+    ws:close()]]
 end
 
 
+Run()
 
-Begin()
 
 --local http_request = require "http.request"
 --local headers, stream = assert(http_request.new_from_uri("http://example.com"):go())
