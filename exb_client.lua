@@ -44,14 +44,15 @@ local Shutdown = false
 DEBUG = arg[1] or false
 
 local function Log(level, fmt, ...)
-    local pkt = os.date("%Y-%m-%d_%H%M%S") .. "-" .. level .. ": " .. string.format(fmt, ...) .. "\n";
-    if level:upper() == "ERROR" then
-        pkt = debug.traceback(pkt, 2)
-    end;
-    if DEBUG then
-        print(pkt)
+    local msg = os.date("%Y-%m-%d_%H%M%S") .. " - " .. level .. ": "
+    for _, v in ipairs { ... } do
+        msg = msg .. " " .. string.format(fmt, v);
     end
-    return debug_file:write(pkt)
+    msg = msg .. "\n"
+    if DEBUG then
+        print(msg)
+    end
+    return debug_file:write(msg)
 end
 
 --- Writes errors to a file.
@@ -60,10 +61,10 @@ end
 -- param: errno The error number provided by the exit call
 -- param: err The error message provided by the exit call
 -- param: debugOut true outputs the info to stdio
-local function LogError(errno, err, ...)
-    if not errno then errno = "na" end
-    if not err then err = "na" end
-    Log("ERROR", "%s", errno, err, ...)
+local function LogError(err, errno, ...)
+    if not errno then errno = "" end
+    if not err then err = "" end
+    Log("Error", "%s", err, errno, ...)
 end
 
 --- Writes a line to the log. Appends Linefeed.
@@ -97,15 +98,17 @@ end
 -- param: ws - The websocket reference
 local function Receive()
     repeat
+        LogInfo("open receive")
+        --need to check the websocket first and connect it if it's down.
         local response, err, errno = ws:receive() -- does this return an error message if it fails?
         if not response then
-            LogError(err, errno)
-            ws:close()
-            Shutdown = true
+            LogError(err, errno, "Recieve Failed. ", debug.traceback())
         else
-            print(response)
+            print("response: " .. response .. " sizeof: " .. #response)
         end
-    until not response or Shutdown == true
+        LogInfo("looping...")
+        cqueues.sleep(3)
+    until Shutdown == true
 end
 
 --- InitStatusUpdate. Starts the cqueue wrap for sending
@@ -115,6 +118,10 @@ end
 -- param: sleepPeriod - The periodicity of the status update
 local function StatusUpdate(sleepPeriod)
     repeat
+        print(ws.readyState)
+        if ws.readyState == 1 then --This doesn't seem to fail when the server goes away?
+        --Check if our websocket is still working first.
+        --if not, go back to sleep
         local msg = message1.new()
         msg.uuid = GetUUID()
         local items = i.ReadInstrumentation()
@@ -123,9 +130,13 @@ local function StatusUpdate(sleepPeriod)
         end
 
         str = json.encode(msg)
-        local success, err, errno = ws:send(str)
-        if not success then
-            LogError(err, errno)
+        local ok, err, errno = ws:send(str)
+        if not ok then
+            LogInfo("send failed.")
+            LogError(err, errno, "Send Failed. ", debug.traceback())
+        end
+        else
+            LogInfo("Skipped sending, ws not ready")
         end
         --This value should come from the config file.
         cqueues.sleep(sleepPeriod)
@@ -198,7 +209,7 @@ local function Run()
     LogInfo("Starting client service on " .. os.date("%b %d, %Y %X"))
 
     cq = cqueues.new()
-    ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
+
 
     cq:wrap(Receive)
     cq:wrap(StdioInput)
@@ -206,10 +217,14 @@ local function Run()
     cq:wrap(StatusUpdate, conf.status_period)
 
     repeat
+        ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
         local ws_ok, err, errno = ws:connect()
         if ws_ok then
             LogInfo("Connected to ..how do I get the address back?")
-            cq:loop()
+            local cq_ok, err, errno = cq:loop()
+            if not cq_ok then
+                LogError(err, errno, "Jumpped the loop.", debug.traceback())
+            end
             --If this falls out, check for errors before looping again
         else
             LogError(err, errno)
@@ -230,6 +245,10 @@ local function Run()
         end
     until Shutdown == true or cq:empty()
     ws:close()]]
+
+    --[[To get the error from step() --
+    -- local cq_ok, msg, errno, thd = cq:step(); if not cq_ok then print(debug.traceback(thd, msg)) end
+    -- ]]
 end
 
 
