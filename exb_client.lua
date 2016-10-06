@@ -209,7 +209,7 @@ local function Run()
     LogInfo("Starting client service on " .. os.date("%b %d, %Y %X"))
 
     cq = cqueues.new()
-    ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
+
 
     cq:wrap(Receive)
     cq:wrap(StdioInput)
@@ -217,10 +217,14 @@ local function Run()
     cq:wrap(StatusUpdate, conf.status_period)
 
     repeat
+        ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
         local ws_ok, err, errno = ws:connect()
         if ws_ok then
             LogInfo("Connected to ..how do I get the address back?")
-            cq:loop()
+            local cq_ok, err, errno = cq:loop()
+            if not cq_ok then
+                LogError(err, errno, "Jumpped the loop.", debug.traceback())
+            end
             --If this falls out, check for errors before looping again
         else
             LogError(err, errno)
