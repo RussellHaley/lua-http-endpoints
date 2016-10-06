@@ -1,89 +1,69 @@
---- This is the server script that runs the websocket/http server
--- @author Russell Haley, Created with IntelliJ IDEA.
--- @copyright 2016
--- @license BSD 2 Clause. See License.txt
+--[[
+A simple HTTP server
+If a request is not a HEAD method, then reply with "Hello world!"
+Usage: lua examples/server_hello.lua [<port>]
+]]
 
-local nice_server = require "nice_server"
-local websocket = require "http.websocket"
+local port = arg[1] or 0 -- 0 means pick one at random
+
+local http_server = require "http.server"
+local http_headers = require "http.headers"
 local dkjson = require "dkjson"
 local serpent = require "serpent"
 
-local configuration = require "configuration"
+local function reply(myserver, stream) -- luacheck: ignore 212
+	-- Read in headers
+	local req_headers = assert(stream:get_headers())
+	local req_method = req_headers:get ":method"
 
-local conf = configuration.new([[exb_server.conf]])
+	-- Log request to stdout
+	assert(io.stdout:write(string.format('[%s] "%s %s HTTP/%g"  "%s" "%s"\n',
+		os.date("%d/%b/%Y:%H:%M:%S %z"),
+		req_headers:get(":method") or "",
+		req_headers:get(":path") or "",
+		stream.connection.version,
+		req_headers:get("referer") or "-",
+		req_headers:get("user-agent") or "-"
+	)))
+local ws = websocket.new_from_stream(resp.stream, resp.request_headers)
+if ws then
+    assert(ws:accept())
+    assert(ws:send("Welcome To exb Server."))
 
-function PrintTable(t)
-    for k, v in pairs(t) do
-        print(k, v)
-    end
-end
-
-
---local timeout = 2
-
---- Reply is where we process the request from the client.
--- The system upgrades to a websocket if the ws or wss protocols are used.
--- @param resp A table with response meta data retrieved from the request.
--- This would typically be used in an http response.
-local function reply(resp)
-
-
-    for k, v in pairs(resp.request_headers) do
-        print(k, v)
-    end
-
-
-    local ws = websocket.new_from_stream(resp.stream, resp.request_headers)
-    if ws then
-
-        assert(ws:accept())
-        assert(ws:send("Welcome To exb Server"))
-
-        repeat
-            local data = assert(ws:receive())
-            if data ~= nil then
-                local json, pos, err = dkjson.decode(data, 1, nil)
-                if not err then
-                    print(serpent.dump(json))
-
-                    if json[1] == "ECHO" then
-                        print "echo echo echoecho..."
-                        ws:send("echo2")
-                    elseif json[1] == "TO BAD SAM" then
-                        print "Nice knownin ya bud"
-                        ws:send("echo2")
-                    elseif json[1] == "ECHO3" then
-                        print "now this is just silly"
-                        ws:send("echo2")
-                    end
-                else
-                    print(data)
-                    print(err)
-                    ws:send(data)
-                end
-            else
-                print "NIL DATA"
+    repeat
+        local data = ws:receive()
+        if data ~= nul then
+            local json, pos,err = dkjson.decode(data,1,nil)
+            if json then
+                print(serpent.dump(json))
             end
+        end
+    until not data
+else
 
-        until not data or data == "QUIT"
-    else
-        resp.body = "No can do bub"
-    end
-    --Not used right now.
-    --local req_body = assert(resp.stream:get_body_as_string(timeout))
-    --local req_body_type = resp.request_headers:get "content-type"
-
-    --1) check the request type. If it's a ws connection, then upgrade it?
-
-    --This would be used in standard http web server
-
-    --    resp.headers:upsert(":status", "200")
-    --    resp.headers:append("content-type", req_body_type or "text/plain")
-    --    resp:set_body("I don't think so bub")
+	-- Build response headers
+	local res_headers = http_headers.new()
+	res_headers:append(":status", "200")
+	res_headers:append("content-type", "text/plain")
+	-- Send headers to client; end the stream immediately if this was a HEAD request
+	assert(stream:write_headers(res_headers, req_method == "HEAD"))
+	if req_method ~= "HEAD" then
+		-- Send body, ending the stream
+		assert(stream:write_chunk("Hello world!\n", true))
+	end
+end
 end
 
-assert(nice_server.new {
-    host = conf.host;
-    port = conf.port;
-    reply = reply;
-}:loop())
+local myserver = http_server.listen {
+	host = "localhost";
+	port = port;
+	onstream = reply;
+}
+-- Manually call :listen() so that we are bound before calling :localname()
+assert(myserver:listen())
+do
+	local bound_port = select(3, myserver:localname())
+	assert(io.stderr:write(string.format("Now listening on port %d\n", bound_port)))
+end
+-- Start the main server loop
+assert(myserver:loop())
