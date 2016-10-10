@@ -73,7 +73,21 @@ local function LogInfo(message)
     Log("Info", "%s", message)
 end
 
-
+local function pt(t)
+    local str = ""
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+            str = str.."----------"..k.."------------"
+            pt(v)
+        else
+            if DEBUG then
+                print(k, v)
+            end
+            str=str..k..": "..v.."\n"
+        end
+    end
+    return str
+end
 
 --- Get a UUID from the OS
 -- return: Returns a system generated UUID
@@ -91,6 +105,21 @@ local function GetUUID()
         WriteError(0, "Failed to generate UUID");
     end
     return val
+end
+
+local function ProcessReceived(data)
+    local msg, pos, err = dkjson.decode(data, 1, nil)
+    if msg then
+
+        if DEBUG then
+            print(pt(msg))
+        end
+        LogInfo(msg.body)
+    else
+        LogInfo("message could not be parsed")
+        LogInfo(pos, err)
+    end
+
 end
 
 --- InitReceive. Starts the CQ wrap that listens on the websocket
@@ -119,9 +148,10 @@ end
 local function StatusUpdate(sleepPeriod)
     repeat
         --if not, go back to sleep
-        local msg = message1.new()
+        local msg = message1.New()
         msg.uuid = GetUUID()
         msg.type = "status"
+        msg.sequence = 1
         local items = i.ReadInstrumentation()
         for k, v in pairs(items) do
             msg.body[k] = v

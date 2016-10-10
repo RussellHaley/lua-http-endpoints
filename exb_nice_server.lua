@@ -10,8 +10,9 @@ local dkjson = require "dkjson"
 local serpent = require "serpent"
 
 local configuration = require "configuration"
-
 local conf = configuration.new([[exb_server.conf]])
+
+local mbase = require "message_base"
 
 local debug_file
 local DEBUG = arg[1] or false
@@ -61,14 +62,19 @@ end
 
 
 local function pt(t)
+    local str = ""
     for k, v in pairs(t) do
         if type(v) == "table" then
-            --print(k,"table")
+            str = str.."----------"..k.."------------"
             pt(v)
         else
-            print(k, v)
+            if DEBUG then
+                print(k, v)
+            end
+            str=str..k..": "..v.."\n"
         end
     end
+    return str
 end
 
 --local timeout = 2
@@ -92,11 +98,24 @@ local function GetUUID()
 end
 
 
-local function ProcessMessage(msg)
-    print("msg received " .. os.date())
+local function ProcessWebsocketMessage(t,msg)
+
     if msg.type then
+
         local type = msg.type:upper()
+
         if type == "STATUS" then
+            t.last_status = os.date()
+            local bt = tonumber(msg.body.board_temperature)
+            if bt and bt > 158 then
+                print("too hot")
+                local reply = mbase.New(msg)
+                reply.body.response="Too Damn Hot!"
+
+                t.websocket:send(dkjson.encode(reply))
+                pt(reply)
+            end
+
             --pt(msg)
             --Log status for each client
         elseif type == "AUTH" then
@@ -115,7 +134,7 @@ end
 -- The system upgrades to a websocket if the ws or wss protocols are used.
 -- @param resp A table with response meta data retrieved from the request.
 -- This would typically be used in an http response.
-local function reply(resp)
+local function ProcessRequest(resp)
 
 
     for k, v in pairs(resp.request_headers) do
@@ -147,7 +166,7 @@ local function reply(resp)
                     if DEBUG then
                         print(serpent.dump(msg))
                     end
-                    ProcessMessage(msg)
+                    ProcessWebsocketMessage(t, msg)
                 else
                     LogInfo("message could not be parsed")
                     LogInfo(pos, err)
@@ -191,7 +210,7 @@ cq:wrap(function()
     assert(nice_server.new {
         host = conf.host;
         port = conf.port;
-        reply = reply;
+        reply = ProcessRequest;
     }:loop())
 end)
 

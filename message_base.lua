@@ -25,11 +25,23 @@ message.body = {}
 
 
 --- Returns a new message.
-local function new()
-    return message;
+local function New(t)
+    if t then
+        if t.client_id then message.initiator = t.client_id end;
+        if t.uuid then message.uuid = t.uuid end;
+        if t.sequence and tonumber(t.sequence) then
+            message.sequence = t.sequence +1
+            if message.sequence > 255 then message.sequence = 1 end;
+        end;
+        if t.source then message.destination = t.source end;
+        if t.destination then message.source = t.destination end;
+        if t.type then message.type = t.type end;
+    end
+
+    return message
 end
 
-return { new = new; }
+return { New = New }
 
 
 
