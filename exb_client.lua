@@ -98,16 +98,16 @@ end
 -- param: ws - The websocket reference
 local function Receive()
     repeat
-        LogInfo("open receive")
+        print("receiving...")
         --need to check the websocket first and connect it if it's down.
         local response, err, errno = ws:receive() -- does this return an error message if it fails?
         if not response then
             LogError(err, errno, "Recieve Failed. ", debug.traceback())
+            LogInfo("waiting...")
+            error("Receive Failed")
         else
             print("response: " .. response .. " sizeof: " .. #response)
         end
-        LogInfo("looping...")
-        cqueues.sleep(3)
     until Shutdown == true
 end
 
@@ -118,29 +118,25 @@ end
 -- param: sleepPeriod - The periodicity of the status update
 local function StatusUpdate(sleepPeriod)
     repeat
-        print(ws.readyState)
-        if ws.readyState == 1 then --This doesn't seem to fail when the server goes away?
-        --Check if our websocket is still working first.
         --if not, go back to sleep
         local msg = message1.new()
         msg.uuid = GetUUID()
+        msg.type = "status"
         local items = i.ReadInstrumentation()
         for k, v in pairs(items) do
             msg.body[k] = v
         end
 
-        str = json.encode(msg)
+        local str = json.encode(msg)
         local ok, err, errno = ws:send(str)
         if not ok then
             LogInfo("send failed.")
             LogError(err, errno, "Send Failed. ", debug.traceback())
-        end
+            error("Send Failed")
         else
-            LogInfo("Skipped sending, ws not ready")
+            cqueues.sleep(sleepPeriod)
         end
-        --This value should come from the config file.
-        cqueues.sleep(sleepPeriod)
-    until Shutdown == true
+    until Shutdown == true or not ok
 end
 
 
@@ -211,19 +207,21 @@ local function Run()
     cq = cqueues.new()
 
 
-    cq:wrap(Receive)
+
     cq:wrap(StdioInput)
     cq:wrap(DebugInput)
+
     cq:wrap(StatusUpdate, conf.status_period)
 
     repeat
         ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
         local ws_ok, err, errno = ws:connect()
         if ws_ok then
-            LogInfo("Connected to ..how do I get the address back?")
+            cq:wrap(Receive)
+            LogInfo("Connected to " .. conf.server_url .. ":" .. conf.server_port)
             local cq_ok, err, errno = cq:loop()
             if not cq_ok then
-                LogError(err, errno, "Jumpped the loop.", debug.traceback())
+                LogError(err, errno, "Jumped the loop.", debug.traceback())
             end
             --If this falls out, check for errors before looping again
         else

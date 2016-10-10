@@ -19,7 +19,7 @@ message.source = ""
 --- Destination Address
 message.destination = ""
 --- Type of message
-message.type = "status"
+message.type = ""
 --- The message specific contents of a transmission
 message.body = {}
 
