@@ -91,8 +91,9 @@ local function GetUUID()
         --Don't remembe what this does, I think
         -- it strips whitespace?
         val = val:gsub("^%s*(.-)%s*$", "%1")
+        handle:close()
     else
-        WriteError(0, "Failed to generate UUID");
+        LogError(0, "Failed to generate UUID");
     end
     return val
 end
