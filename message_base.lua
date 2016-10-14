@@ -1,5 +1,5 @@
 --- A base class for all messages
--- @author Russell Haley, Created with IntelliJ IDEA.
+-- @author Russell Haley
 -- @copyright 2016
 -- @license BSD 2 Clause. See License.txt
 

@@ -1,5 +1,5 @@
 --- This is the server script that runs the websocket/http server
--- @author Russell Haley, Created with IntelliJ IDEA.
+-- @author Russell Haley
 -- @copyright 2016
 -- @license BSD 2 Clause. See License.txt
 
@@ -214,6 +214,18 @@ cq:wrap(function()
         reply = ProcessRequest;
     }:loop())
 end)
+
+--[[
+---
+-- Waits on signals
+cq:wrap(function()
+    signal.block(signal.SIGINT, signal.SIGHUP)
+    local signo = signal.listen(signal.SIGINT, signal.SIGHUP):wait()
+    cluck("exiting on signal (%s)", signal.strsignal(signo))
+    os.exit(0)
+end)
+]]
+
 
 assert(cq:loop())
 

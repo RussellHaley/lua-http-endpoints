@@ -4,7 +4,7 @@
 -- There are two update methodoldies:
 -- 1)Persist the entire table at the same time or
 -- 2)Persiste a single key value item
--- @author Russell Haley, Created with IntelliJ IDEA.
+-- @author Russell Haley
 -- @copyright 2016
 -- @license BSD 2 Clause. See License.txt
 

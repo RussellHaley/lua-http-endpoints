@@ -1,6 +1,6 @@
 --- Opens a websocket connection with
 -- the server_url option specified in the client conf file.
--- @author Russell Haley, Created with IntelliJ IDEA.
+-- @author Russell Haley
 -- @copyright 2016
 -- @license BSD 2 Clause. See License.txt
 
@@ -210,6 +210,10 @@ end
 
 local function StopServices()
     Shutdown = true
+    -- Can I use a condition here instead?
+    --The condition can be used to shut down
+    -- the ws:receive(cond?) and checked before the
+    -- if not condition(?) then send() end;
     ws:close()
     LogInfo("System shutdown initiated.")
 end
@@ -223,7 +227,6 @@ local function StdioInput()
         io.stdout:write("Input> ")
         cqueues.poll({ pollfd = 0; events = "r" }) -- wait until data ready to read on stdin
         local data = io.stdin:read "*l" -- blockingly read a line. shouldn't block if tty is in line buffered mode.
-        print(data)
         if data:upper() == "SHUTDOWN" then StopServices() end;
     until Shutdown == true
 end
