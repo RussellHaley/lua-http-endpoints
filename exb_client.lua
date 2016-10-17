@@ -1,8 +1,7 @@
 --- Opens a websocket connection with
 -- the server_url option specified in the client conf file.
--- @author Russell Haley
--- @copyright 2016
--- @license BSD 2 Clause. See License.txt
+-- @copyright (c) 2016 Russell Haley
+-- @license FreeBSD License. See License.txt
 
 --- The cqueue library
 local cqueues = require "cqueues"
@@ -19,7 +18,7 @@ local instrumentation = require "instrumentation"
 local configuration = require "configuration"
 --- A little library for file manipulation,
 -- familiar patterns for a C# developer.
-local file = require "file"
+--local file = require "file"
 
 --Lua only serializer package.
 --local serialize = require "ser"
@@ -97,7 +96,7 @@ local function GetUUID()
     local handle = io.popen("uuidgen")
     local val, lines
     if handle then
-        val, lines = handle:read("*a")
+        val = handle:read("*a")
         --Don't remembe what this does, I think
         -- it strips whitespace?
         val = val:gsub("^%s*(.-)%s*$", "%1")

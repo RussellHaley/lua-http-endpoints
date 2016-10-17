@@ -2,8 +2,8 @@
 -- Can also write a line item. If it exists, it updates the value
 --- Table returned with conf KVPs.
 -- @author Russell Haley
--- @copyright 2016
--- @license BSD 2 Clause. See License.txt
+-- @copyright (c) 2016 Russell Haley
+-- @license FreeBSD License. See License.txt
 
 local conf = {}
 
@@ -130,7 +130,7 @@ conf.SetItem = function(key, value)
     lines[value_lines[var]] = var .. '=' .. new_value
     --        and then write out
     local f, e = io.open(file, 'w');
-    for i, line in ipairs(lines) do
+    for _, line in ipairs(lines) do
         f:write(line, '\n')
     end
     f:close()
@@ -140,9 +140,6 @@ end
 local function new(file, removequotes, debug)
     return ReadConf(file, removequotes, debug)
 end
-
-
-
 
 
 return { new = new; }

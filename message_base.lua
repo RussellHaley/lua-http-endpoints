@@ -1,7 +1,6 @@
 --- A base class for all messages
--- @author Russell Haley
--- @copyright 2016
--- @license BSD 2 Clause. See License.txt
+-- @copyright (c) 2016 Russell Haley
+-- @license FreeBSD License. See License.txt
 
 
 

@@ -1,7 +1,6 @@
 --- This is the server script that runs the websocket/http server
--- @author Russell Haley
--- @copyright 2016
--- @license BSD 2 Clause. See License.txt
+-- @copyright (c) 2016 Russell Haley
+-- @license FreeBSD License. See License.txt
 
 local cqueues = require "cqueues"
 local nice_server = require "nice_server"
@@ -87,7 +86,7 @@ local function GetUUID()
     local handle = io.popen("uuidgen")
     local val, lines
     if handle then
-        val, lines = handle:read("*a")
+        val = handle:read("*a")
         --Don't remembe what this does, I think
         -- it strips whitespace?
         val = val:gsub("^%s*(.-)%s*$", "%1")
@@ -198,7 +197,7 @@ cq = cqueues.new()
 
 cq:wrap(function()
     while 1 do
-        for k, v in pairs(sessions) do
+        for _, v in pairs(sessions) do
             v.websocket:send("yeeha!")
             --v.websocket:ping()
             print(v.session_id, v.session_start)

@@ -1,7 +1,6 @@
 ---
--- @author William Ahern, modified by Russell Haley
--- @Copyright Russell Haley
--- @license BSD 2 Clause. See License.txt
+-- @copyright (c) 2016 Russell Haley
+-- @license FreeBSD License. See License.txt
 
 
 local strict = require "strict"
@@ -14,7 +13,7 @@ local assert = auxlib.assert -- cqueues doesn't yet do idiomatic error tuples
 
 local progname = arg and arg[0] or "notify"
 
-local function cluck(...)
+local function Notify(...)
     local msg = string.format(...)
     for ln, nl in msg:gmatch "([^\n]*)(\n?)" do
         if #ln > 0 or #nl > 0 then
@@ -65,7 +64,7 @@ local mainloop = cqueues.new()
 local path = ... or "logtesting.log"
 
 mainloop:wrap(function()
-    cluck("watching %s", path)
+    Notify("watching %s", path)
 
     local nfy = assert(notify.opendir(dirname(path), notify.ALL))
     assert(nfy:add(basename(path)))
@@ -74,29 +73,28 @@ mainloop:wrap(function()
         -- ignore changes to containing directory
         if name == basename(path) then
             for flag in notify.flags(flags) do
-                cluck("%s %s", name, notify[flag])
+                Notify("%s %s", name, notify[flag])
             end
         end
     end
 end)
 
----
+
 -- Waits on signals
 mainloop:wrap(function()
     signal.block(signal.SIGINT, signal.SIGHUP)
     local signo = signal.listen(signal.SIGINT, signal.SIGHUP):wait()
-    cluck("exiting on signal (%s)", signal.strsignal(signo))
+    Notify("exiting on signal (%s)", signal.strsignal(signo))
     os.exit(0)
 end)
 
 
---
+
 -- Implement a dead-man switch in case a bug in our code causes the main
 -- loop to stall.
---
--- ------------------------------------------------------------------------
 mainloop:wrap(function()
-    local thr, pipe = thread.start(function(pipe)
+    local thr, pipe2, errno = thread.start(function(pipe)
+
         local cqueues = require"cqueues"
         local sleep = cqueues.sleep
         local poll = cqueues.poll
@@ -122,11 +120,18 @@ mainloop:wrap(function()
 
         os.exit(false)
     end)
-
-    mainloop:wrap(function()
+    if not thr then
+        print(errno)
+        os.exit(false)
+    end
+    loop:wrap(function()
+        print("gothere1")
         while true do
-            sleep(5)
-            assert(pipe:write"!\n")
+            print("gothere2")
+            assert(sleep(1))
+            print("gothere3")
+            assert(pipe2:write"!\n")
+            print("gothere3")
         end
     end)
 end)
@@ -140,7 +145,7 @@ while not mainloop:empty() do
 
     if not okay then
         for err in mainloop:errors() do
-            cluck("%s", err)
+            Notify("%s", err)
             os.exit(1)
         end
     end

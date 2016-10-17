@@ -1,10 +1,10 @@
-# lua-http-endpoints
+# lua-http-endpoints (Example B)
 
 This is a non-trivial (less trivial?) example of using lua-http and cqueues to create a http and websocket based application that can be used for remote communications.
 
-* lua_ws_client.lua - client code that sends periodic status updates
+* exb_client.lua - client code that sends periodic status updates
 * nice_server.lua - Un-modified from Daurnimators example http server. Thanks again Daurnimator.
-* envb_socket_server.lua - The server side application logic that processes incoming requests
+* exb_nice_server.lua - The server side application logic that processes incoming requests
 
 
 

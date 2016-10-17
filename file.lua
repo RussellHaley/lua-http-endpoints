@@ -73,7 +73,7 @@ end
 --- extract the filename from a path
 -- @param path the path with filename
 function file.getfilename(path)
-    i = path:find("/")
+    local i = path:find("/")
     if i == nil then
         return path:match("^.+\\(.+)$")
     else
@@ -85,7 +85,7 @@ end
 -- @param path a full path or just a file
 -- @return the extension if a '.' is found, otherwise nil
 function file.getfileextension(path)
-    ext = path:match "[^.]+$"
+    local ext = path:match "[^.]+$"
     if #ext == #url then
         return nil
     else

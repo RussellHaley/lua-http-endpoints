@@ -4,9 +4,8 @@
 -- There are two update methodoldies:
 -- 1)Persist the entire table at the same time or
 -- 2)Persiste a single key value item
--- @author Russell Haley
--- @copyright 2016
--- @license BSD 2 Clause. See License.txt
+-- @copyright (c) 2016 Russell Haley
+-- @license FreeBSD License. See License.txt
 
 --[[
 1) start a new application database for persistent values
@@ -36,7 +35,7 @@ local configuration = require("configuration")
 --Set up lmdb and a table of constants
 local lightningmdb = _VERSION >= "Lua 5.2" and lightningmdb_lib or lightningmdb
 local MDB = setmetatable({}, {
-    __index = function(t, k)
+    __index = function(_, k)
         return lightningmdb["MDB_" .. k]
     end
 })
@@ -46,7 +45,7 @@ local MDB = setmetatable({}, {
 local function protect(tbl)
     return setmetatable({}, {
         __index = tbl,
-        __newindex = function(t, key, value)
+        __newindex = function(_, key, value)
             error("attempting to change constant " ..
                     tostring(key) .. " to " .. tostring(value), 2)
         end
@@ -57,7 +56,7 @@ end
 Instr.Stat = function()
     local e = lightningmdb.env_create()
     e:open(Instr["data_directory"], 0, 420)
-    stat = e:stat()
+    local stat = e:stat()
     e:close()
     return stat
 
@@ -100,7 +99,7 @@ local function cursor_pairs(cursor_, key_, op_)
     return coroutine.wrap(function()
         local k = key_
         repeat
-            k, v = cursor_:get(k, op_ or MDB.NEXT)
+            local k, v = cursor_:get(k, op_ or MDB.NEXT)
             if k then
                 coroutine.yield(k, v)
             end
@@ -111,7 +110,7 @@ end
 --- Create a UUID for unique keys. This is no longer used here I don't think
 local function GetUuid()
     local handle = io.popen("uuidgen")
-    local val, lines = handle:read("*a")
+    local val = handle:read("*a")
     val = val:gsub("^%s*(.-)%s*$", "%1")
     return val
 end
@@ -178,7 +177,7 @@ local function new(confFilePath)
         print("Found data directory. Using existing database.")
     else
         local count = 0
-        for slash in Instr.data_directory:gmatch("/") do
+        for _ in Instr.data_directory:gmatch("/") do
             count = count + 1
         end
 
