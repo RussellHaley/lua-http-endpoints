@@ -90,22 +90,25 @@ end)
 
 
 
--- Implement a dead-man switch in case a bug in our code causes the main
--- loop to stall.
-mainloop:wrap(function()
-    local thr, pipe2, errno = thread.start(function(pipe)
 
+--- Implement a dead-man switch in case a bug in our code causes the main
+-- loop to stall.
+--
+-- ------------------------------------------------------------------------
+mainloop:wrap(function()
+    local thr, pipe = thread.start(function(pipe)
         local cqueues = require"cqueues"
         local sleep = cqueues.sleep
         local poll = cqueues.poll
         local loop = cqueues.new()
 
         loop:wrap(function()
-            sleep(10)
+            cqueues.sleep(10)
 
             -- try to drain socket so we don't get stale alive
             -- tokens on successive iterations.
             while pipe:recv(-32) do
+                print("muchas Gracisas")
                 poll(pipe, 10)
             end
 
@@ -120,18 +123,12 @@ mainloop:wrap(function()
 
         os.exit(false)
     end)
-    if not thr then
-        print(errno)
-        os.exit(false)
-    end
-    loop:wrap(function()
-        print("gothere1")
+
+    mainloop:wrap(function()
         while true do
-            print("gothere2")
-            assert(sleep(1))
-            print("gothere3")
-            assert(pipe2:write"!\n")
-            print("gothere3")
+            cqueues.sleep(5)
+            assert(pipe:write"!\n")
+            Notify("Ei, carumba!")
         end
     end)
 end)
@@ -140,13 +137,7 @@ end)
 --cqueues.poll({pollfd = myfd; events = "p"})
 
 
-while not mainloop:empty() do
-    local okay, why = mainloop:step()
-
-    if not okay then
-        for err in mainloop:errors() do
-            Notify("%s", err)
-            os.exit(1)
-        end
-    end
+for err in mainloop:errors() do
+    Notify("%s", err)
+    os.exit(1)
 end
