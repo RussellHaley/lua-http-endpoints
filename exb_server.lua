@@ -3,7 +3,8 @@
 -- @license FreeBSD License. See License.txt
 
 local cqueues = require "cqueues"
-local nice_server = require "nice_server"
+local http_server = require "http.server"
+local http_headers = require "http.headers"
 local websocket = require "http.websocket"
 local dkjson = require "dkjson"
 local serpent = require "serpent"
@@ -18,7 +19,7 @@ local DEBUG = arg[1] or false
 
 local sessions = {}
 
-function PrintTable(t)
+local function PrintTable(t)
     for k, v in pairs(t) do
         print(k, v)
     end
@@ -64,13 +65,13 @@ local function pt(t)
     local str = ""
     for k, v in pairs(t) do
         if type(v) == "table" then
-            str = str.."----------"..k.."------------"
+            str = str .. "----------" .. k .. "------------"
             pt(v)
         else
             if DEBUG then
                 print(k, v)
             end
-            str=str..k..": "..v.."\n"
+            str = str .. k .. ": " .. v .. "\n"
         end
     end
     return str
@@ -98,7 +99,7 @@ local function GetUUID()
 end
 
 
-local function ProcessWebsocketMessage(t,msg)
+local function ProcessWebsocketMessage(t, msg)
 
     if msg.type then
 
@@ -110,7 +111,7 @@ local function ProcessWebsocketMessage(t,msg)
             if bt and bt > 158 then
                 print("too hot")
                 local reply = mbase.New(msg)
-                reply.body.response="Too Damn Hot!"
+                reply.body.response = "Too Damn Hot!"
 
                 t.websocket:send(dkjson.encode(reply))
                 pt(reply)
@@ -134,10 +135,12 @@ end
 -- The system upgrades to a websocket if the ws or wss protocols are used.
 -- @param resp A table with response meta data retrieved from the request.
 -- This would typically be used in an http response.
-local function ProcessRequest(resp)
+local function ProcessRequest(server, stream)
 
+    local request_headers = assert(stream:get_headers())
+    local request_method = request_headers:get ":method"
 
-    for k, v in pairs(resp.request_headers) do
+    for k, v in pairs(request_headers) do
         print(k, v)
     end
 
@@ -145,7 +148,7 @@ local function ProcessRequest(resp)
 
 
 
-    local ws = websocket.new_from_stream(resp.stream, resp.request_headers)
+    local ws = websocket.new_from_stream(stream, request_headers)
     if ws then
         local t = {}
         t.session_id = id
@@ -164,7 +167,7 @@ local function ProcessRequest(resp)
                 local msg, pos, err = dkjson.decode(data, 1, nil)
                 if msg then
                     if DEBUG then
-                        print(serpent.dump(msg))
+                        print(serpent.block(msg))
                     end
                     ProcessWebsocketMessage(t, msg)
                 else
@@ -185,35 +188,86 @@ local function ProcessRequest(resp)
         sessions[id] = nil
     else
         --standard HTTP request. Need to still do something with it.
-        local req_body = assert(resp.stream:get_body_as_string(timeout))
+        local req_body = assert(stream:get_body_as_string(timeout))
         LogInfo(req_body)
-        resp.headers:upsert(":status", "200")
-        resp.headers:append("content-type", req_body_type or "text/html")
-        resp:set_body([[<html><head><head><body bgcolor="light blue">This server doesn't like http right now. Please use a websocket</body></html>]])
+        local response_headers = http_headers.new()
+        response_headers:append(":status", "200")
+        response_headers:append("content-type", "text/plain")
+        response_headers:append("content-type", req_body_type or "text/html")
+
+        assert(stream:write_headers(response_headers, request_method == "HEAD"))
+        -- Send headers to client; end the stream immediately if this was a HEAD request
+        if request_method == "HEAD" then return end;
+        -- Send body, ending the stream
+        local body = [[<html><head><head><body bgcolor="light blue">This server doesn't like http right now. Please use a websocket</body></html>]]
+        --resp:set_body([[<html><head><head><body bgcolor="light blue">This server doesn't like http right now. Please use a websocket</body></html>]])
+        assert(stream:write_chunk(body, true))
     end
 end
 
-cq = cqueues.new()
+--cq = cqueues.new()
+--
+--cq:wrap(function()
+--    while 1 do
+--        for _, v in pairs(sessions) do
+--            v.websocket:send("yeeha!")
+--            --v.websocket:ping()
+--            print(v.session_id, v.session_start)
+--        end
+--        cqueues.sleep(3)
+--    end
+--end)
 
-cq:wrap(function()
-    while 1 do
-        for _, v in pairs(sessions) do
-            v.websocket:send("yeeha!")
-            --v.websocket:ping()
-            print(v.session_id, v.session_start)
-        end
-        cqueues.sleep(3)
-    end
-end)
-cq:wrap(function()
+--cq:wrap(function()
+--
+--    assert(nice_server.new {
+--        host = conf.host;
+--        port = conf.port;
+--        reply = ProcessRequest;
+--    }:loop())
+--end)
 
-    assert(nice_server.new {
-        host = conf.host;
-        port = conf.port;
-        reply = ProcessRequest;
-    }:loop())
-end)
+local app_server = http_server.listen {
+    host = conf.host;
+    port = conf.port;
+    onstream = ProcessRequest;
+}
 
+-- Manually call :listen() so that we are bound before calling :localname()
+assert(app_server:listen())
+do
+    local bound_port = select(3, app_server:localname())
+    assert(io.stderr:write(string.format("Now listening on port %d\n", bound_port)))
+end
+-- Start the main server loop
+assert(app_server:loop())
+--app_server:wrap(function()
+--    while 1 do
+--        for _, v in pairs(sessions) do
+--            v.websocket:send("yeeha!")
+--            --v.websocket:ping()
+--            print(v.session_id, v.session_start)
+--        end
+--        cqueues.sleep(3)
+--    end
+--end)
+
+
+
+
+--cq = cqueues.new()
+--
+--cq:wrap(function()
+--    while 1 do
+--        for _, v in pairs(sessions) do
+--            v.websocket:send("yeeha!")
+--            --v.websocket:ping()
+--            print(v.session_id, v.session_start)
+--        end
+--        cqueues.sleep(3)
+--    end
+
+--end)
 --[[
 ---
 -- Waits on signals
@@ -225,8 +279,7 @@ cq:wrap(function()
 end)
 ]]
 
-
-assert(cq:loop())
+--assert(cq:loop())
 
 if debug_file then
     debug_file:close()
