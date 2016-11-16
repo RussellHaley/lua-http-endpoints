@@ -100,9 +100,9 @@ mainloop:wrap(function()
         local cqueues = require"cqueues"
         local sleep = cqueues.sleep
         local poll = cqueues.poll
-        local loop = cqueues.new()
+        local watchdog = cqueues.new()
 
-        loop:wrap(function()
+        watchdog:wrap(function()
             cqueues.sleep(10)
 
             -- try to drain socket so we don't get stale alive
@@ -111,14 +111,10 @@ mainloop:wrap(function()
                 print("muchas Gracisas")
                 poll(pipe, 10)
             end
-
             io.stderr:write"main thread unresponsive\n"
-
             os.exit(false)
         end)
-
-        local ok, why = loop:loop()
-
+        local ok, why = watchdog:loop()
         io.stderr:write(string.format("dead-man thread failed: %s\n", why or "unknown error"))
 
         os.exit(false)

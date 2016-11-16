@@ -250,6 +250,8 @@ local function Run()
         ws = websocket.new_from_uri("ws://" .. conf.server_url .. ":" .. conf.server_port)
         local ws_ok, err, errno = ws:connect()
         if ws_ok then
+--            print(ws:localname())
+--            print(ws:peername())
             cq:wrap(Receive)
             LogInfo("Connected to " .. conf.server_url .. ":" .. conf.server_port)
             local cq_ok, err, errno = cq:loop()

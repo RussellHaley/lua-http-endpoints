@@ -1,83 +1,90 @@
---- This is the server script that runs the websocket/http server
+--- Remote Client Server utilizing lua-http library
 -- @copyright (c) 2016 Russell Haley
 -- @license FreeBSD License. See License.txt
 
 local cqueues = require "cqueues"
+local signal = require "cqueues.signal"
 local http_server = require "http.server"
 local http_headers = require "http.headers"
 local websocket = require "http.websocket"
 local dkjson = require "dkjson"
 local serpent = require "serpent"
-
 local configuration = require "configuration"
 local conf = configuration.new([[exb_server.conf]])
-
 local mbase = require "message_base"
+local watchdog = require "watchdog"
+local rolling_logger = require "logging.rolling_file"
 
-local debug_file
+local logger = rolling_logger(conf.base_path .. "/" .. conf.debug_file_name, conf.file_roll_size or 1024*1024*10, conf.max_log_files or 31)
+if not logger then
+    print("logger failed")
+    os.exit(0)
+end
+
+local connection_log = rolling_logger(conf.base_path .. "/" .. conf.debug_file_name, conf.file_roll_size or 1024*1024*10, conf.max_log_files or 31)
+
 local DEBUG = arg[1] or false
 
 local sessions = {}
 
+--- Debugging tool
 local function PrintTable(t)
     for k, v in pairs(t) do
         print(k, v)
     end
 end
 
-local function Log(level, fmt, ...)
-    if not debug_file then
-        debug_file = io.open(conf.base_path .. "/" .. conf.debug_file_name, 'a')
-    end
-
-    local msg = os.date("%Y-%m-%d_%H%M%S") .. " - " .. level .. ": "
-    for _, v in ipairs { ... } do
-        msg = msg .. " " .. string.format(fmt, v);
-    end
-    msg = msg .. "\n"
-    if DEBUG then
-        print(msg)
-    end
-    return debug_file:write(msg)
-end
-
-
---- Writes errors to a file.
--- This needs serious work, or you should
--- just get a proper logger.
--- param: errno The error number provided by the exit call
--- param: err The error message provided by the exit call
--- param: debugOut true outputs the info to stdio
-local function LogError(err, errno, ...)
-    if not errno then errno = "" end
-    if not err then err = "" end
-    Log("Error", "%s", err, errno, ...)
-end
-
---- Writes a line to the log. Appends Linefeed.
--- param: message - string for logging
-local function LogInfo(message)
-    Log("Info", "%s", message)
-end
+----- Base logging function. If the file is not
+---- open, it opens it. Writes to file but does
+---- not close it.
+--local function Log(level, fmt, ...)
+--    if not debug_file then
+--        debug_file = io.open(conf.base_path .. "/" .. conf.debug_file_name, 'a')
+--    end
+--
+--    local msg = os.date("%Y-%m-%d %H:%M:%S") .. " - " .. level .. ": "
+--    for _, v in ipairs { ... } do
+--        msg = msg .. " " .. string.format(fmt, v);
+--    end
+--    msg = msg .. "\n"
+--    if DEBUG then
+--        print(msg)
+--    end
+--    debug_file:write(msg)
+--    return debug_file:flush()
+--end
 
 
+----- Writes errors to a file.
+---- param: errno The error number provided by the exit call
+---- param: err The error message provided by the exit call
+---- param: debugOut true outputs the info to stdio
+--local function logger:error(err, errno, ...)
+--    if not errno then errno = "" end
+--    if not err then err = "" end
+--    Log("Error", "%s", err, errno, ...)
+--end
+--
+----- Writes a  non-error line to the log. Appends Linefeed.
+---- param: message - string for logging
+--local function logger:info(message)
+--    Log("info", "%s", message)
+-- end
+
+
+--- Prints nested tables. Another debugging tool
 local function pt(t)
     local str = ""
     for k, v in pairs(t) do
         if type(v) == "table" then
             str = str .. "----------" .. k .. "------------"
-            pt(v)
+            str = str.. pt(v)
         else
-            if DEBUG then
-                print(k, v)
-            end
             str = str .. k .. ": " .. v .. "\n"
         end
     end
     return str
 end
-
---local timeout = 2
 
 --- Get a UUID from the OS
 -- return: Returns a system generated UUID
@@ -93,7 +100,7 @@ local function GetUUID()
         val = val:gsub("^%s*(.-)%s*$", "%1")
         handle:close()
     else
-        LogError(0, "Failed to generate UUID");
+        logger:error(0, "Failed to generate UUID");
     end
     return val
 end
@@ -114,10 +121,9 @@ local function ProcessWebsocketMessage(t, msg)
                 reply.body.response = "Too Damn Hot!"
 
                 t.websocket:send(dkjson.encode(reply))
-                pt(reply)
+                logger:info(pt(reply))
             end
 
-            --pt(msg)
             --Log status for each client
         elseif type == "AUTH" then
 
@@ -125,28 +131,34 @@ local function ProcessWebsocketMessage(t, msg)
 
         elseif type == "UNIT-RESPONSE" then
         else
-            print("Type=" .. msg.type)
-            pt(msg)
+            logger:info("Type=" .. msg.type)
+            logger:info(pt(msg))
         end
     end
 end
 
---- Reply is where we process the request from the client.
+--- ProcessRequest is where we process the request from the client.
 -- The system upgrades to a websocket if the ws or wss protocols are used.
--- @param resp A table with response meta data retrieved from the request.
--- This would typically be used in an http response.
+-- @param server ?
+-- @param An open stream to the client. Raw socket abstraction?
 local function ProcessRequest(server, stream)
 
     local request_headers = assert(stream:get_headers())
     local request_method = request_headers:get ":method"
 
-    for k, v in pairs(request_headers) do
-        print(k, v)
-    end
+
+    --how do I get the client url and mac?
+    connection_log:info(string.format('[%s] "%s %s HTTP/%g"  "%s" "%s" ',
+        os.date("%d/%b/%Y:%H:%M:%S %z"),
+        request_headers:get(":method") or "",
+        request_headers:get(":path") or "",
+        stream.connection.version,
+        request_headers:get("referer") or "-",
+        request_headers:get("user-agent") or "-"
+        ))
+
 
     local id = GetUUID()
-
-
 
     local ws = websocket.new_from_stream(stream, request_headers)
     if ws then
@@ -167,33 +179,34 @@ local function ProcessRequest(server, stream)
                 local msg, pos, err = dkjson.decode(data, 1, nil)
                 if msg then
                     if DEBUG then
-                        print(serpent.block(msg))
+                        logger:info(serpent.block(msg))
                     end
                     ProcessWebsocketMessage(t, msg)
                 else
-                    LogInfo("message could not be parsed")
-                    LogInfo(pos, err)
+                    logger:info("message could not be parsed")
+                    logger:info(pos, err)
                 end
             else
                 --Add valid reason codes for the data to be nil?
                 if errno == 1 then
 
                 else
-                    LogError(err, errno, "Recieve Failed")
+                    logger:error(err, errno, "Recieve Failed")
                 end
             end
 
         until not data
-        LogInfo("removed " .. id)
+        logger:info("removed " .. id)
         sessions[id] = nil
     else
         --standard HTTP request. Need to still do something with it.
+        local request_content_type = request_headers:get("content-type")
         local req_body = assert(stream:get_body_as_string(timeout))
-        LogInfo(req_body)
+        logger:info(req_body)
         local response_headers = http_headers.new()
         response_headers:append(":status", "200")
         response_headers:append("content-type", "text/plain")
-        response_headers:append("content-type", req_body_type or "text/html")
+        response_headers:append("content-type", request_content_type  or "text/html")
 
         assert(stream:write_headers(response_headers, request_method == "HEAD"))
         -- Send headers to client; end the stream immediately if this was a HEAD request
@@ -205,83 +218,56 @@ local function ProcessRequest(server, stream)
     end
 end
 
---cq = cqueues.new()
---
---cq:wrap(function()
---    while 1 do
---        for _, v in pairs(sessions) do
---            v.websocket:send("yeeha!")
---            --v.websocket:ping()
---            print(v.session_id, v.session_start)
---        end
---        cqueues.sleep(3)
---    end
---end)
+--- Polls the table of "Client" objects that contain a reference
+-- to the underlying websocket so you can push messages
+local function PollClients()
+    while 1 do
+        for _, v in pairs(sessions) do
+            v.websocket:send("yeeha!")
+            --v.websocket:ping()
+            logger:info(string.format("Ping - %s: %s", v.session_id, v.session_start))
+        end
+        cqueues.sleep(3)
+    end
+end
 
---cq:wrap(function()
---
---    assert(nice_server.new {
---        host = conf.host;
---        port = conf.port;
---        reply = ProcessRequest;
---    }:loop())
---end)
+--- Waits on signals. Useful if the server goes dead.
+local function SignalsRoutine()
+    signal.block(signal.SIGINT, signal.SIGHUP)
+    local signo = signal.listen(signal.SIGINT, signal.SIGHUP):wait()
+    logger:info(string.format("exiting on signal (%s)", signal.strsignal(signo)))
+    os.exit(0)
+end
 
 local app_server = http_server.listen {
     host = conf.host;
     port = conf.port;
     onstream = ProcessRequest;
 }
-
--- Manually call :listen() so that we are bound before calling :localname()
-assert(app_server:listen())
-do
-    local bound_port = select(3, app_server:localname())
-    assert(io.stderr:write(string.format("Now listening on port %d\n", bound_port)))
-end
--- Start the main server loop
-assert(app_server:loop())
---app_server:wrap(function()
---    while 1 do
---        for _, v in pairs(sessions) do
---            v.websocket:send("yeeha!")
---            --v.websocket:ping()
---            print(v.session_id, v.session_start)
---        end
---        cqueues.sleep(3)
---    end
---end)
-
-
-
-
---cq = cqueues.new()
+local main = cqueues.new()
+--local doggy = watchdog.new(main, logger)
 --
---cq:wrap(function()
---    while 1 do
---        for _, v in pairs(sessions) do
---            v.websocket:send("yeeha!")
---            --v.websocket:ping()
---            print(v.session_id, v.session_start)
---        end
---        cqueues.sleep(3)
---    end
+--main:wrap(doggy.run)
+--main:wrap(doggy.signals)
 
---end)
---[[
----
--- Waits on signals
-cq:wrap(function()
-    signal.block(signal.SIGINT, signal.SIGHUP)
-    local signo = signal.listen(signal.SIGINT, signal.SIGHUP):wait()
-    cluck("exiting on signal (%s)", signal.strsignal(signo))
-    os.exit(0)
+main:wrap(function()
+    -- Manually call :listen() so that we are bound before calling :localname()
+    assert(app_server:listen())
+    do
+        print(app_server:localname())
+        logger:info(string.format("Now listening on port %d\n", conf.port))
+    end
+    local cq_ok, err, errno = app_server:loop()
+    if not cq_ok then
+        logger:error(err, errno, "Http server process ended.", debug.traceback())
+    end
 end)
-]]
 
---assert(cq:loop())
-
-if debug_file then
-    debug_file:close()
+for err in main:errors() do
+    print(err)
+    logger:error("%s", err)
+    os.exit(1)
 end
+
+
 
